@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: warehouse_inventory_management
+  datasource:
+    url: "jdbc:postgresql://localhost:5430/pg_db"
+    username: user
+    password: 1111
