@@ -9,7 +9,7 @@ import petr.warehouse.inventory_management.service.entity.Storage;
 @Setter
 public class StorageItemDto {
     private String name;
-    private Storage storage;
+//    private Storage storage;
     private int count;
     private ItemStatus status;
 }
