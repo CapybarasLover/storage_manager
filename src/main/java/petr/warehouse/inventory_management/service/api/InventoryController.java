@@ -27,4 +27,12 @@ public class InventoryController {
     String updateProduct(@PathVariable String id, @PathVariable String productName){
         return null;
     }
+
+    //Удалить продукт
+    @DeleteMapping("/{id}/{productName}/delete")
+    String deleteProduct(@PathVariable String id, @PathVariable String productName){
+        return null;
+    }
+
+
 }
