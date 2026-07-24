@@ -17,7 +17,7 @@ public class StorageManagerService {
     @Autowired
     StorageMapper storageMapper;
 
-    StorageDto getStorageById(Long id){
+    public StorageDto getStorageById(Long id){
         StorageDto storageDto = new StorageDto();
 
         Optional<Storage> storageOptional = storageRepo.findById(id);
