@@ -1,7 +1,7 @@
 package petr.warehouse.inventory_management.service.api;
 
 import org.springframework.stereotype.Component;
-import petr.warehouse.inventory_management.service.entity.StorageItem;
+import petr.warehouse.inventory_management.service.db.entity.StorageItem;
 
 @Component
 public class StorageItemMapper {

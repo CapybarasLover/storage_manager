@@ -1,7 +1,11 @@
 package petr.warehouse.inventory_management.service.api;
 
 import org.springframework.stereotype.Component;
-import petr.warehouse.inventory_management.service.entity.Storage;
+import petr.warehouse.inventory_management.service.db.entity.Storage;
+import petr.warehouse.inventory_management.service.db.entity.StorageItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class StorageMapper {
@@ -13,7 +17,14 @@ public class StorageMapper {
         StorageDto dto = new StorageDto();
 
         dto.setName(storage.getName());
-        dto.setStorageItemList(storage.getItems());
+        List<StorageItemDto> itemListDto = new ArrayList<>();
+
+        List<StorageItem> storageItemList = storage.getItems();
+
+        for(var item : storageItemList){
+            itemListDto.add(StorageItemMapper.toDto(item));
+        }
+        dto.setStorageItemListDto(itemListDto);
 
         return dto;
     }
@@ -26,7 +37,16 @@ public class StorageMapper {
         Storage storage = new Storage();
 
         storage.setName(dto.getName());
-        storage.setItems(dto.getStorageItemList());
+
+        List<StorageItemDto> itemListDto = dto.getStorageItemListDto();
+
+        List<StorageItem> storageItemList = new ArrayList<>();
+
+        for(var dtoItem : itemListDto){
+            storageItemList.add(StorageItemMapper.toStorageItem(dtoItem));
+        }
+
+        storage.setItems(storageItemList);
 
         return storage;
     }
