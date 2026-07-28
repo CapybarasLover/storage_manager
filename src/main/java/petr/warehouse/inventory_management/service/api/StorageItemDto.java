@@ -2,8 +2,7 @@ package petr.warehouse.inventory_management.service.api;
 
 import lombok.Getter;
 import lombok.Setter;
-import petr.warehouse.inventory_management.service.entity.ItemStatus;
-import petr.warehouse.inventory_management.service.entity.Storage;
+import petr.warehouse.inventory_management.service.db.entity.ItemStatus;
 
 @Getter
 @Setter

@@ -1,4 +1,4 @@
-package petr.warehouse.inventory_management.service.entity;
+package petr.warehouse.inventory_management.service.db.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,7 +11,21 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Operations {
+public class Operation {
+    public Operation(
+            String storageName,
+            OperationType operationType,
+            String productName,
+            int amount,
+            LocalDateTime operationDateTime
+    ){
+        this.storageName = storageName;
+        this.operationType = operationType;
+        this.productName = productName;
+        this.amount = amount;
+        this.operationDateTime = operationDateTime;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

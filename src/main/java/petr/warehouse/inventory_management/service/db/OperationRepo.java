@@ -1,4 +1,7 @@
 package petr.warehouse.inventory_management.service.db;
 
-public class OperationRepo {
+import org.springframework.data.jpa.repository.JpaRepository;
+import petr.warehouse.inventory_management.service.db.entity.Operation;
+
+public interface OperationRepo extends JpaRepository<Operation, Long> {
 }

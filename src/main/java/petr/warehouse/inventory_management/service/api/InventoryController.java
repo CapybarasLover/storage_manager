@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import petr.warehouse.inventory_management.service.StorageManagerService;
 
 @RestController()
-@RequestMapping("/srorage")
+@RequestMapping("/storage")
 public class InventoryController {
     @Autowired
     StorageManagerService storageService;
@@ -16,23 +16,30 @@ public class InventoryController {
         return storageService.getStorageById(Long.parseLong(id));
     }
 
-    //Добавить новый продукт
-    @PostMapping("/{id}/newproduct")
-    String postNewProduct(@PathVariable String id){
-        return null;
+    //Добавить склад
+    @PostMapping("/newStorage")
+    String postNewStorage(@RequestParam(name = "name") String storageName){
+        return storageService.createStorage(storageName);
     }
 
-    //Обновить продукт
-    @PutMapping("/{id}/{productName}")
-    String updateProduct(@PathVariable String id, @PathVariable String productName){
-        return null;
+    //Добавить новый продукт
+    @PostMapping("/{id}/newProduct")
+    String postNewProduct(@PathVariable(name = "id") String storageId, @RequestParam(name = "name") String productName){
+        return storageService.addProduct(storageId, productName);
     }
 
     //Удалить продукт
-    @DeleteMapping("/{id}/{productName}/delete")
-    String deleteProduct(@PathVariable String id, @PathVariable String productName){
+    @DeleteMapping("/{id}/deleteProduct")
+    String deleteProduct(@PathVariable String id, @RequestParam String productName){
         return null;
     }
 
-
+    //Изменить продукт
+    @PatchMapping("/{id}/operation")
+    String operationType(@PathVariable String id,
+                         @RequestParam(name="type") String operationType,
+                         @RequestParam(name="product") String productName,
+                         @RequestParam(name="count") String count){
+        return storageService.executeOperation(operationType, productName, count);
+    }
 }

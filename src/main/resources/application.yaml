@@ -5,3 +5,6 @@ spring:
     url: "jdbc:postgresql://localhost:5430/pg_db"
     username: user
     password: 1111
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
