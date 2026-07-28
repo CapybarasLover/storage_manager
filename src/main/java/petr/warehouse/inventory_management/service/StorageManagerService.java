@@ -47,7 +47,7 @@ public class StorageManagerService {
         try{
             storageRepo.save(storage);
         } catch (Exception e){
-            return "Error: couldn't create new storage";
+            return "Error: couldn't create new storage " + e.getMessage();
         }
         return "Storage " + storageName + " created!";
     }
@@ -57,7 +57,7 @@ public class StorageManagerService {
         try{
             itemRepo.save(newItem);
         } catch (Exception e){
-            return "Error: couldn't create new item";
+            return "Error: couldn't create new item " + e.getMessage();
         }
         return "Item " + itemName + " created!";
     }

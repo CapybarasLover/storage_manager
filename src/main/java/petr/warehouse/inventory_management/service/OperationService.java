@@ -32,17 +32,50 @@ public class OperationService {
                     countInt,
                     LocalDateTime.now()
                     );
+            opRepo.save(operation);
             return "Операция выполнена!";
         } catch (Exception e){
             return "Не удалось выполнить операцию!";
         }
     }
 
-    public void opSell(String productName, String count) {
+    public String opSell(String productName, String count) {
+        Integer countInt = Integer.parseInt(count);
 
+        try{
+            StorageItem item = itemRepo.getReferenceByItemName(productName);
+            item.minusCount(countInt);
+            itemRepo.save(item);
+            Operation operation = new Operation(item.getStorage().getName(),
+                    OperationType.SELL,
+                    productName,
+                    countInt,
+                    LocalDateTime.now()
+            );
+            opRepo.save(operation);
+            return "Операция выполнена!";
+        } catch (Exception e) {
+            return "Не удалось выполнить операцию!";
+        }
     }
 
-    public void opWrightOff(String productName, String count) {
+    public String opWrightOff(String productName, String count) {
+        Integer countInt = Integer.parseInt(count);
 
+        try{
+            StorageItem item = itemRepo.getReferenceByItemName(productName);
+            item.minusCount(countInt);
+            itemRepo.save(item);
+            Operation operation = new Operation(item.getStorage().getName(),
+                    OperationType.WRIGHT_OFF,
+                    productName,
+                    countInt,
+                    LocalDateTime.now()
+            );
+            opRepo.save(operation);
+            return "Операция выполнена!";
+        } catch (Exception e) {
+            return "Не удалось выполнить операцию!";
+        }
     }
 }

@@ -34,6 +34,7 @@ public class Operation {
     private String storageName;
 
     @Column(name = "operation_type")
+    @Enumerated(value = EnumType.STRING)
     private OperationType operationType;
 
     @Column(name = "product_name")
@@ -42,6 +43,7 @@ public class Operation {
     @Column(name = "amount")
     private int amount;
 
+    //FIXME таймштамп не по локальному времени
     @Column(name = "operation_date_time", columnDefinition = "timestamptz")
     private LocalDateTime operationDateTime;
 }

@@ -53,5 +53,14 @@ public class StorageItem {
         }
     }
 
+    public void minusCount(Integer countInt) {
+        if(itemCount - countInt >= 0){
+            itemCount -= countInt;
+            changeStatus();
+        } else {
+            throw new RuntimeException("На складе нет столько товара!");
+        }
+    }
+
     //TODO написать похожую функцию для проверки статуса, либо для блокировки операции при нехватке продукции.
 }
