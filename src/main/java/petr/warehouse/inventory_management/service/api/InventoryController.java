@@ -12,8 +12,8 @@ public class InventoryController {
 
     //Получить данные склада по id
     @GetMapping("/{id}")
-    StorageDto getStorage(@PathVariable String id){
-        return storageService.getStorageById(Long.parseLong(id));
+    StorageDto getStorage(@PathVariable(name = "id") String storageId){
+        return storageService.getStorageById(Long.parseLong(storageId));
     }
 
     //Добавить склад
@@ -30,16 +30,16 @@ public class InventoryController {
 
     //Удалить продукт
     @DeleteMapping("/{id}/deleteProduct")
-    String deleteProduct(@PathVariable String id, @RequestParam String productName){
-        return null;
+    String deleteProduct(@PathVariable(name = "id") String storageId, @RequestParam(name = "name") String productName){
+        return storageService.deleteProduct(storageId, productName);
     }
 
     //Изменить продукт
     @PatchMapping("/{id}/operation")
-    String operationType(@PathVariable String id,
+    String operationType(@PathVariable(name = "id") String storageId,
                          @RequestParam(name="type") String operationType,
                          @RequestParam(name="product") String productName,
                          @RequestParam(name="count") String count){
-        return storageService.executeOperation(operationType, productName, count);
+        return storageService.executeOperation(storageId, operationType, productName, count);
     }
 }

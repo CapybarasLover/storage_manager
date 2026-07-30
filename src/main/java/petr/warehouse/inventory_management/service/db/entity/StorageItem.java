@@ -27,7 +27,7 @@ public class StorageItem {
     @JoinColumn(name = "storage_id")
     private Storage storage;
 
-    @Column(name = "item", unique = true)
+    @Column(name = "item")
     private String itemName;
 
     @Column(name = "count")

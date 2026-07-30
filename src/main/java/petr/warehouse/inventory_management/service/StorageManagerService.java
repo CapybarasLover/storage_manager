@@ -10,6 +10,7 @@ import petr.warehouse.inventory_management.service.db.StorageRepo;
 import petr.warehouse.inventory_management.service.db.entity.StorageItem;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 @Service
 public class StorageManagerService {
@@ -62,15 +63,25 @@ public class StorageManagerService {
         return "Item " + itemName + " created!";
     }
 
-    public String executeOperation(String operationType, String productName, String count) {
+    public String executeOperation(String storageId, String operationType, String productName, String count) {
         if(operationType.equals("поступление")){
-            operationService.opAdmission(productName, count);
+            return operationService.opAdmission(storageId, productName, count);
         } else if(operationType.equals("продажа")){
-            operationService.opSell(productName, count);
+            return operationService.opSell(storageId, productName, count);
         } else if(operationType.equals("списание")){
-            operationService.opWrightOff(productName, count);
+            return operationService.opWrightOff(storageId, productName, count);
+        } else {
+            return "Неизвестная операция!";
+        }
+    }
+
+    public String deleteProduct(String storageId, String productName) {
+        try{
+            itemRepo.deleteByItemNameAndStorageId(productName, Long.parseLong(storageId));
+        } catch (Exception e) {
+            return "Невозможно удалить продукт " + productName + ": " + e.getMessage();
         }
 
-        return "операция выполнена!";
+        return "Продукт " + productName + " удален!";
     }
 }
