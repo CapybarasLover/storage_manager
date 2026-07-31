@@ -53,8 +53,8 @@ public class StorageManagerService {
         return "Storage " + storageName + " created!";
     }
 
-    public String addProduct(String storageId, String itemName) {
-        StorageItem newItem = new StorageItem(itemName, storageRepo.getReferenceById(Long.parseLong(storageId)));
+    public String addProduct(Long storageId, String itemName) {
+        StorageItem newItem = new StorageItem(itemName, storageRepo.getReferenceById(storageId));
         try{
             itemRepo.save(newItem);
         } catch (Exception e){
@@ -63,7 +63,7 @@ public class StorageManagerService {
         return "Item " + itemName + " created!";
     }
 
-    public String executeOperation(String storageId, String operationType, String productName, String count) {
+    public String executeOperation(Long storageId, String operationType, String productName, Integer count) {
         if(operationType.equals("поступление")){
             return operationService.opAdmission(storageId, productName, count);
         } else if(operationType.equals("продажа")){
@@ -75,9 +75,9 @@ public class StorageManagerService {
         }
     }
 
-    public String deleteProduct(String storageId, String productName) {
+    public String deleteProduct(Long storageId, String productName) {
         try{
-            itemRepo.deleteByItemNameAndStorageId(productName, Long.parseLong(storageId));
+            itemRepo.deleteByItemNameAndStorageId(productName, storageId);
         } catch (Exception e) {
             return "Невозможно удалить продукт " + productName + ": " + e.getMessage();
         }

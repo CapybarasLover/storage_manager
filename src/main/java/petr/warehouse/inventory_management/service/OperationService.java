@@ -2,6 +2,7 @@ package petr.warehouse.inventory_management.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import petr.warehouse.inventory_management.service.db.OperationRepo;
 import petr.warehouse.inventory_management.service.db.StorageItemRepo;
 import petr.warehouse.inventory_management.service.db.entity.Operation;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 
 //Класс для работы с операциями
 @Service
+@Transactional
 public class OperationService {
     @Autowired
     OperationRepo opRepo;
@@ -19,63 +21,46 @@ public class OperationService {
     @Autowired
     StorageItemRepo itemRepo;
 
-    public String opAdmission(String storageId, String productName, String count){
-        Integer countInt = Integer.parseInt(count);
-
-        try{
-            StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, Long.parseLong(storageId));
-            item.addCount(countInt);
-            itemRepo.save(item);
-            Operation operation = new Operation(item.getStorage().getName(),
-                    OperationType.ADMISSION,
-                    productName,
-                    countInt,
-                    LocalDateTime.now()
-                    );
-            opRepo.save(operation);
-            return "Операция выполнена!";
-        } catch (Exception e){
-            return "Не удалось выполнить операцию: " + e.getMessage();
-        }
+    public String opAdmission(Long storageId, String productName, Integer count){
+        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, storageId);
+        item.addCount(count);
+        itemRepo.save(item);
+        int i = 1 / 0;
+        Operation operation = new Operation(item.getStorage().getName(),
+                OperationType.ADMISSION,
+                productName,
+                count,
+                LocalDateTime.now()
+                );
+        opRepo.save(operation);
+        return "Операция выполнена!";
     }
 
-    public String opSell(String storageId, String productName, String count) {
-        Integer countInt = Integer.parseInt(count);
-
-        try{
-            StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, Long.parseLong(storageId));
-            item.minusCount(countInt);
-            itemRepo.save(item);
-            Operation operation = new Operation(item.getStorage().getName(),
-                    OperationType.SELL,
-                    productName,
-                    countInt,
-                    LocalDateTime.now()
-            );
-            opRepo.save(operation);
-            return "Операция выполнена!";
-        } catch (Exception e) {
-            return "Не удалось выполнить операцию!";
-        }
+    public String opSell(Long storageId, String productName, Integer count) {
+        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, storageId);
+        item.minusCount(count);
+        itemRepo.save(item);
+        Operation operation = new Operation(item.getStorage().getName(),
+                OperationType.SELL,
+                productName,
+                count,
+                LocalDateTime.now()
+        );
+        opRepo.save(operation);
+        return "Операция выполнена!";
     }
 
-    public String opWrightOff(String storageId, String productName, String count) {
-        Integer countInt = Integer.parseInt(count);
-
-        try{
-            StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, Long.parseLong(storageId));
-            item.minusCount(countInt);
-            itemRepo.save(item);
-            Operation operation = new Operation(item.getStorage().getName(),
-                    OperationType.WRIGHT_OFF,
-                    productName,
-                    countInt,
-                    LocalDateTime.now()
-            );
-            opRepo.save(operation);
-            return "Операция выполнена!";
-        } catch (Exception e) {
-            return "Не удалось выполнить операцию!";
-        }
+    public String opWrightOff(Long storageId, String productName, Integer count) {
+        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, storageId);
+        item.minusCount(count);
+        itemRepo.save(item);
+        Operation operation = new Operation(item.getStorage().getName(),
+                OperationType.WRIGHT_OFF,
+                productName,
+                count,
+                LocalDateTime.now()
+        );
+        opRepo.save(operation);
+        return "Операция выполнена!";
     }
 }
