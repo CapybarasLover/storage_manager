@@ -3,11 +3,11 @@ package petr.warehouse.inventory_management.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import petr.warehouse.inventory_management.service.db.OperationRepo;
-import petr.warehouse.inventory_management.service.db.StorageItemRepo;
-import petr.warehouse.inventory_management.service.db.entity.Operation;
-import petr.warehouse.inventory_management.service.db.entity.OperationType;
-import petr.warehouse.inventory_management.service.db.entity.StorageItem;
+import petr.warehouse.inventory_management.repository.OperationRepo;
+import petr.warehouse.inventory_management.repository.StorageItemRepo;
+import petr.warehouse.inventory_management.model.Operation;
+import petr.warehouse.inventory_management.model.OperationType;
+import petr.warehouse.inventory_management.model.StorageItem;
 
 import java.time.LocalDateTime;
 
@@ -24,8 +24,7 @@ public class OperationService {
     public String opAdmission(Long storageId, String productName, Integer count){
         StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, storageId);
         item.addCount(count);
-        itemRepo.save(item);
-        int i = 1 / 0;
+
         Operation operation = new Operation(item.getStorage().getName(),
                 OperationType.ADMISSION,
                 productName,

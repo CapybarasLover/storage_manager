@@ -1,4 +1,4 @@
-package petr.warehouse.inventory_management.service.db.entity;
+package petr.warehouse.inventory_management.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -46,4 +46,6 @@ public class Operation {
     //FIXME таймштамп не по локальному времени
     @Column(name = "operation_date_time", columnDefinition = "timestamptz")
     private LocalDateTime operationDateTime;
+
+    //TODO добавить комментарии.
 }

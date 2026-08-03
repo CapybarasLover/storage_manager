@@ -1,4 +1,4 @@
-package petr.warehouse.inventory_management.service.db.entity;
+package petr.warehouse.inventory_management.model;
 
 public enum OperationType {
     SELL,

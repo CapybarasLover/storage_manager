@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/run_wsl_claude_in_curr_dir.bat

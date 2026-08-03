@@ -1,7 +1,8 @@
-package petr.warehouse.inventory_management.service.api;
+package petr.warehouse.inventory_management.mapper;
 
 import org.springframework.stereotype.Component;
-import petr.warehouse.inventory_management.service.db.entity.StorageItem;
+import petr.warehouse.inventory_management.dto.StorageItemDto;
+import petr.warehouse.inventory_management.model.StorageItem;
 
 @Component
 public class StorageItemMapper {
@@ -11,7 +12,6 @@ public class StorageItemMapper {
         }
         StorageItem storageItem = new StorageItem();
 
-//        storageItem.setStorage(dto.getStorage());
         storageItem.setItemCount(dto.getCount());
         storageItem.setItemName(dto.getName());
         storageItem.setItemStatus(dto.getStatus());
@@ -26,7 +26,6 @@ public class StorageItemMapper {
 
         StorageItemDto dto = new StorageItemDto();
 
-//        dto.setStorage(storageItem.getStorage());
         dto.setCount(storageItem.getItemCount());
         dto.setName(storageItem.getItemName());
         dto.setStatus(storageItem.getItemStatus());

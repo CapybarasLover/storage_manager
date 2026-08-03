@@ -1,8 +1,7 @@
-package petr.warehouse.inventory_management.service.api;
+package petr.warehouse.inventory_management.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import petr.warehouse.inventory_management.service.db.entity.StorageItem;
 
 import java.util.List;
 

@@ -1,19 +1,21 @@
-package petr.warehouse.inventory_management.service.api;
+package petr.warehouse.inventory_management.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import petr.warehouse.inventory_management.service.StorageManagerService;
+import petr.warehouse.inventory_management.dto.StorageDto;
 
 @RestController()
-@RequestMapping("/storage")
+@RequestMapping("storage")
 public class InventoryController {
     @Autowired
     StorageManagerService storageService;
 
     //Получить данные склада по id
     @GetMapping("/{id}")
-    StorageDto getStorage(@PathVariable(name = "id") Long storageId){
-        return storageService.getStorageById(storageId);
+    ResponseEntity<StorageDto> getStorage(@PathVariable(name = "id") Long storageId){
+        return ResponseEntity.ok(storageService.getStorageById(storageId));
     }
 
     //Добавить склад

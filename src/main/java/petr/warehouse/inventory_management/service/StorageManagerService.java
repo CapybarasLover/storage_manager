@@ -2,15 +2,14 @@ package petr.warehouse.inventory_management.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import petr.warehouse.inventory_management.service.api.StorageDto;
-import petr.warehouse.inventory_management.service.api.StorageMapper;
-import petr.warehouse.inventory_management.service.db.StorageItemRepo;
-import petr.warehouse.inventory_management.service.db.entity.Storage;
-import petr.warehouse.inventory_management.service.db.StorageRepo;
-import petr.warehouse.inventory_management.service.db.entity.StorageItem;
+import petr.warehouse.inventory_management.dto.StorageDto;
+import petr.warehouse.inventory_management.mapper.StorageMapper;
+import petr.warehouse.inventory_management.repository.StorageItemRepo;
+import petr.warehouse.inventory_management.model.Storage;
+import petr.warehouse.inventory_management.repository.StorageRepo;
+import petr.warehouse.inventory_management.model.StorageItem;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @Service
 public class StorageManagerService {
@@ -31,12 +30,7 @@ public class StorageManagerService {
 
         Storage storage;
 
-        if(storageOptional.isPresent()){
-            storage = storageOptional.get();
-        }
-        else {
-            storage = null;
-        }
+        storage = storageOptional.orElse(null);
 
         return storageMapper.toDto(storage);
     }

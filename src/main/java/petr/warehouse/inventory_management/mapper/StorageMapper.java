@@ -1,8 +1,10 @@
-package petr.warehouse.inventory_management.service.api;
+package petr.warehouse.inventory_management.mapper;
 
 import org.springframework.stereotype.Component;
-import petr.warehouse.inventory_management.service.db.entity.Storage;
-import petr.warehouse.inventory_management.service.db.entity.StorageItem;
+import petr.warehouse.inventory_management.dto.StorageDto;
+import petr.warehouse.inventory_management.dto.StorageItemDto;
+import petr.warehouse.inventory_management.model.Storage;
+import petr.warehouse.inventory_management.model.StorageItem;
 
 import java.util.ArrayList;
 import java.util.List;

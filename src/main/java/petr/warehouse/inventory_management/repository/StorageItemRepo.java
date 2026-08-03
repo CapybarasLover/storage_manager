@@ -1,9 +1,11 @@
-package petr.warehouse.inventory_management.service.db;
+package petr.warehouse.inventory_management.repository;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import petr.warehouse.inventory_management.service.db.entity.StorageItem;
+import org.springframework.stereotype.Repository;
+import petr.warehouse.inventory_management.model.StorageItem;
 
+@Repository
 public interface StorageItemRepo extends JpaRepository<StorageItem, Long> {
     StorageItem getReferenceByItemName(String productName);
     @Transactional
