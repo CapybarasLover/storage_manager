@@ -1,5 +1,7 @@
 services:
   backend:
+    env_file:
+      - .env
     build:
       context: .
     image: inventory_backend
