@@ -17,13 +17,15 @@ public class Operation {
             OperationType operationType,
             String productName,
             int amount,
-            LocalDateTime operationDateTime
+            LocalDateTime operationDateTime,
+            String comment
     ){
         this.storageName = storageName;
         this.operationType = operationType;
         this.productName = productName;
         this.amount = amount;
         this.operationDateTime = operationDateTime;
+        this.comment = comment;
     }
 
     @Id
@@ -48,4 +50,6 @@ public class Operation {
     private LocalDateTime operationDateTime;
 
     //TODO добавить комментарии.
+    @Column(name = "comment")
+    private String comment;
 }
