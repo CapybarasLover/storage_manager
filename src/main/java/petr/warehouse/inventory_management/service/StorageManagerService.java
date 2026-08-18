@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import petr.warehouse.inventory_management.dto.StorageDto;
 import petr.warehouse.inventory_management.mapper.StorageMapper;
+import petr.warehouse.inventory_management.model.OperationType;
 import petr.warehouse.inventory_management.repository.StorageItemRepo;
 import petr.warehouse.inventory_management.model.Storage;
 import petr.warehouse.inventory_management.repository.StorageRepo;
@@ -57,13 +58,13 @@ public class StorageManagerService {
         return "Item " + itemName + " created!";
     }
 
-    public String executeOperation(Long storageId, String operationType, String productName, Integer count) {
+    public String executeOperation(Long storageId, OperationType operationType, String productName, Integer count, String comment) {
         if(operationType.equals("поступление")){
-            return operationService.opAdmission(storageId, productName, count);
+            return operationService.opAdmission(storageId, productName, count, comment);
         } else if(operationType.equals("продажа")){
-            return operationService.opSell(storageId, productName, count);
+            return operationService.opSell(storageId, productName, count, comment);
         } else if(operationType.equals("списание")){
-            return operationService.opWrightOff(storageId, productName, count);
+            return operationService.opWrightOff(storageId, productName, count, comment);
         } else {
             return "Неизвестная операция!";
         }

@@ -21,7 +21,7 @@ public class OperationService {
     @Autowired
     StorageItemRepo itemRepo;
 
-    public String opAdmission(Long storageId, String productName, Integer count){
+    public String opAdmission(Long storageId, String productName, Integer count, String comment){
         StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, storageId);
         item.addCount(count);
 
@@ -29,13 +29,14 @@ public class OperationService {
                 OperationType.ADMISSION,
                 productName,
                 count,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                comment
                 );
         opRepo.save(operation);
         return "Операция выполнена!";
     }
 
-    public String opSell(Long storageId, String productName, Integer count) {
+    public String opSell(Long storageId, String productName, Integer count, String comment) {
         StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, storageId);
         item.minusCount(count);
         itemRepo.save(item);
@@ -43,13 +44,14 @@ public class OperationService {
                 OperationType.SELL,
                 productName,
                 count,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                comment
         );
         opRepo.save(operation);
         return "Операция выполнена!";
     }
 
-    public String opWrightOff(Long storageId, String productName, Integer count) {
+    public String opWrightOff(Long storageId, String productName, Integer count, String comment) {
         StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, storageId);
         item.minusCount(count);
         itemRepo.save(item);
@@ -57,7 +59,8 @@ public class OperationService {
                 OperationType.WRIGHT_OFF,
                 productName,
                 count,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                comment
         );
         opRepo.save(operation);
         return "Операция выполнена!";

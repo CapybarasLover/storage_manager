@@ -1,8 +1,14 @@
 package petr.warehouse.inventory_management.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import petr.warehouse.inventory_management.dto.OperationDto;
+import petr.warehouse.inventory_management.filter.OperationFilter;
+import petr.warehouse.inventory_management.model.OperationType;
+import petr.warehouse.inventory_management.service.OperationService;
 import petr.warehouse.inventory_management.service.StorageManagerService;
 import petr.warehouse.inventory_management.dto.StorageDto;
 
@@ -11,6 +17,9 @@ import petr.warehouse.inventory_management.dto.StorageDto;
 public class InventoryController {
     @Autowired
     StorageManagerService storageService;
+
+    @Autowired
+    OperationService operationService;
 
     //Получить данные склада по id
     @GetMapping("/{id}")
@@ -39,9 +48,20 @@ public class InventoryController {
     //Изменить продукт
     @PatchMapping("/{id}/operation")
     String operationType(@PathVariable(name = "id") Long storageId,
-                         @RequestParam(name="type") String operationType,
+                         @RequestParam(name="type") OperationType operationType,
                          @RequestParam(name="product") String productName,
                          @RequestParam(name="count") Integer count){
         return storageService.executeOperation(storageId, operationType, productName, count);
+    }
+
+    @GetMapping("/operations")
+    public Page<OperationDto> getOperations(
+            OperationFilter filter,
+            Pageable pageable
+    ) {
+        return operationService.getOperations(
+                filter,
+                pageable
+        );
     }
 }

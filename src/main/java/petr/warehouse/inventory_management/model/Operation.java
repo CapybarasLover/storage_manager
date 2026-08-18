@@ -49,7 +49,6 @@ public class Operation {
     @Column(name = "operation_date_time", columnDefinition = "timestamptz")
     private LocalDateTime operationDateTime;
 
-    //TODO добавить комментарии.
     @Column(name = "comment")
     private String comment;
 }
