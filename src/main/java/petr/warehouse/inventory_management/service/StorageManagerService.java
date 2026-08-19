@@ -59,11 +59,11 @@ public class StorageManagerService {
     }
 
     public String executeOperation(Long storageId, OperationType operationType, String productName, Integer count, String comment) {
-        if(operationType.equals("поступление")){
+        if(operationType.equals(OperationType.ADMISSION)){
             return operationService.opAdmission(storageId, productName, count, comment);
-        } else if(operationType.equals("продажа")){
+        } else if(operationType.equals(OperationType.SELL)){
             return operationService.opSell(storageId, productName, count, comment);
-        } else if(operationType.equals("списание")){
+        } else if(operationType.equals(OperationType.WRIGHT_OFF)){
             return operationService.opWrightOff(storageId, productName, count, comment);
         } else {
             return "Неизвестная операция!";

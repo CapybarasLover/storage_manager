@@ -8,8 +8,8 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      db:
-        condition: service_healthy
+      liquibase:
+        condition: service_completed_successfully
     networks:
       - backend_net
   db:
@@ -40,6 +40,25 @@ services:
           memory: 512M
     networks:
       - backend_net
+
+  liquibase:
+    image: liquibase:4.30.0
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./src/main/resources/db/changelog:/liquibase/changelog:ro
+    working_dir: /liquibase/changelog
+    command:
+      - --changeLogFile=db.changelog-master.yaml
+      - --url=${DB_URL}
+      - --username=${DB_USER}
+      - --password=${DB_PASS}
+      - update
+    networks:
+      - backend_net
+
 
 networks:
   backend_net:

@@ -50,18 +50,19 @@ public class InventoryController {
     String operationType(@PathVariable(name = "id") Long storageId,
                          @RequestParam(name="type") OperationType operationType,
                          @RequestParam(name="product") String productName,
-                         @RequestParam(name="count") Integer count){
-        return storageService.executeOperation(storageId, operationType, productName, count);
+                         @RequestParam(name="count") Integer count,
+                         @RequestParam(name="comment") String comment){
+        return storageService.executeOperation(storageId, operationType, productName, count, comment);
     }
 
-    @GetMapping("/operations")
-    public Page<OperationDto> getOperations(
-            OperationFilter filter,
-            Pageable pageable
-    ) {
-        return operationService.getOperations(
-                filter,
-                pageable
-        );
-    }
+//    @GetMapping("/operations")
+//    public Page<OperationDto> getOperations(
+//            OperationFilter filter,
+//            Pageable pageable
+//    ) {
+//        return operationService.getOperations(
+//                filter,
+//                pageable
+//        );
+//    }
 }
