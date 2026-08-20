@@ -12,4 +12,6 @@ public interface StorageItemRepo extends JpaRepository<StorageItem, Long> {
     void deleteByItemNameAndStorageId(String productName, Long storageId);
 
     StorageItem getReferenceByItemNameAndStorageId(String productName, Long storageId);
+
+    void deleteByIdAndStorageId(Long Id, Long storageId);
 }

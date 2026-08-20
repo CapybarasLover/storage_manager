@@ -1,16 +1,22 @@
 package petr.warehouse.inventory_management.controller;
 
+import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import petr.warehouse.inventory_management.dto.OperationDto;
+import petr.warehouse.inventory_management.dto.OperationRequestDto;
 import petr.warehouse.inventory_management.filter.OperationFilter;
 import petr.warehouse.inventory_management.model.OperationType;
 import petr.warehouse.inventory_management.service.OperationService;
 import petr.warehouse.inventory_management.service.StorageManagerService;
 import petr.warehouse.inventory_management.dto.StorageDto;
+
+import java.net.URI;
 
 @RestController()
 @RequestMapping("storage")
@@ -22,37 +28,42 @@ public class InventoryController {
     OperationService operationService;
 
     //Получить данные склада по id
-    @GetMapping("/{id}")
-    ResponseEntity<StorageDto> getStorage(@PathVariable(name = "id") Long storageId){
+    @GetMapping("/{storageId}")
+    ResponseEntity<StorageDto> getStorage(@PathVariable Long storageId){
         return ResponseEntity.ok(storageService.getStorageById(storageId));
     }
 
     //Добавить склад
-    @PostMapping("/newStorage")
-    String postNewStorage(@RequestParam(name = "name") String storageName){
-        return storageService.createStorage(storageName);
+    @PostMapping
+    ResponseEntity<Void> postNewStorage(@RequestParam String name){
+        Long storageId = storageService.createStorage(name);
+        URI location = URI.create("/storage/" + storageId);
+        return ResponseEntity.created(location).build();
     }
 
     //Добавить новый продукт
-    @PostMapping("/{id}/newProduct")
-    String postNewProduct(@PathVariable(name = "id") Long storageId, @RequestParam(name = "name") String productName){
-        return storageService.addProduct(storageId, productName);
+    @PostMapping("/{storageId}/products")
+    ResponseEntity<Void> postNewProduct(@PathVariable Long storageId, @RequestParam String productName){
+        storageService.addProduct(storageId, productName);
+        URI location = URI.create("/storage/" + storageId + "/products/" + productName);
+        return ResponseEntity.created(location).build();
     }
 
     //Удалить продукт
-    @DeleteMapping("/{id}/deleteProduct")
-    String deleteProduct(@PathVariable(name = "id") Long storageId, @RequestParam(name = "name") String productName){
-        return storageService.deleteProduct(storageId, productName);
+    @DeleteMapping("/{storageId}/products/{productId}")
+    ResponseEntity<?> deleteProduct(@PathVariable Long storageId, @PathVariable Long productId){
+        storageService.deleteProduct(storageId, productId);
+        return ResponseEntity.noContent().build();
     }
 
     //Изменить продукт
-    @PatchMapping("/{id}/operation")
-    String operationType(@PathVariable(name = "id") Long storageId,
-                         @RequestParam(name="type") OperationType operationType,
-                         @RequestParam(name="product") String productName,
-                         @RequestParam(name="count") Integer count,
-                         @RequestParam(name="comment") String comment){
-        return storageService.executeOperation(storageId, operationType, productName, count, comment);
+    @PatchMapping("/{storageId}/operation")
+    public ResponseEntity<Void> executeOperation(
+            @PathVariable Long storageId,
+            @Valid @RequestBody OperationRequestDto requestBody
+    ){
+        storageService.executeOperation(storageId, requestBody);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 //    @GetMapping("/operations")

@@ -2,7 +2,9 @@ package petr.warehouse.inventory_management.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import petr.warehouse.inventory_management.dto.OperationRequestDto;
 import petr.warehouse.inventory_management.dto.StorageDto;
+import petr.warehouse.inventory_management.exception.DataExceptions.StorageNotFoundException;
 import petr.warehouse.inventory_management.mapper.StorageMapper;
 import petr.warehouse.inventory_management.model.OperationType;
 import petr.warehouse.inventory_management.repository.StorageItemRepo;
@@ -11,6 +13,8 @@ import petr.warehouse.inventory_management.repository.StorageRepo;
 import petr.warehouse.inventory_management.model.StorageItem;
 
 import java.util.Optional;
+
+//TODO проверить класс на транзакции, если требуются - добавить @Transactional
 
 @Service
 public class StorageManagerService {
@@ -33,21 +37,27 @@ public class StorageManagerService {
 
         storage = storageOptional.orElse(null);
 
+        if(storage == null){
+            throw new StorageNotFoundException("Хранилище не найдено!");
+        }
+
         return storageMapper.toDto(storage);
     }
 
-    public String createStorage(String storageName) {
+    public Long createStorage(String storageName) {
         Storage storage = new Storage();
         storage.setName(storageName);
 
         try{
             storageRepo.save(storage);
         } catch (Exception e){
-            return "Error: couldn't create new storage " + e.getMessage();
+            throw new StorageNotFoundException("Хранилище не найдено!");
         }
-        return "Storage " + storageName + " created!";
+
+        return storage.getId();
     }
 
+    //DOTO Бросать ошибку а не возвращать строку
     public String addProduct(Long storageId, String itemName) {
         StorageItem newItem = new StorageItem(itemName, storageRepo.getReferenceById(storageId));
         try{
@@ -58,25 +68,22 @@ public class StorageManagerService {
         return "Item " + itemName + " created!";
     }
 
-    public String executeOperation(Long storageId, OperationType operationType, String productName, Integer count, String comment) {
-        if(operationType.equals(OperationType.ADMISSION)){
-            return operationService.opAdmission(storageId, productName, count, comment);
-        } else if(operationType.equals(OperationType.SELL)){
-            return operationService.opSell(storageId, productName, count, comment);
-        } else if(operationType.equals(OperationType.WRIGHT_OFF)){
-            return operationService.opWrightOff(storageId, productName, count, comment);
-        } else {
-            return "Неизвестная операция!";
-        }
+    public String executeOperation(Long storageId, OperationRequestDto requestBody) {
+        return switch (requestBody.getOperationType()) {
+            case ADMISSION -> operationService.opAdmission(storageId, requestBody);
+            case SELL -> operationService.opSell(storageId, requestBody);
+            case WRITE_OFF -> operationService.opWriteOff(storageId, requestBody);
+        };
     }
 
-    public String deleteProduct(Long storageId, String productName) {
+    //DOTO Бросать ошибку а не возвращать строку
+    public String deleteProduct(Long storageId, Long productId) {
         try{
-            itemRepo.deleteByItemNameAndStorageId(productName, storageId);
+            itemRepo.deleteByIdAndStorageId(productId, storageId);
         } catch (Exception e) {
-            return "Невозможно удалить продукт " + productName + ": " + e.getMessage();
+            return "Невозможно удалить продукт " + productId + ": " + e.getMessage();
         }
 
-        return "Продукт " + productName + " удален!";
+        return "Продукт " + productId + " удален!";
     }
 }

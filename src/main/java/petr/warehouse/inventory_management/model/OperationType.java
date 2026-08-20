@@ -3,5 +3,5 @@ package petr.warehouse.inventory_management.model;
 public enum OperationType {
     SELL,
     ADMISSION,
-    WRIGHT_OFF
+    WRITE_OFF
 }

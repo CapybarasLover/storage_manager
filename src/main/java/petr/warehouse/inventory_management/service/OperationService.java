@@ -1,8 +1,10 @@
 package petr.warehouse.inventory_management.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import petr.warehouse.inventory_management.dto.OperationRequestDto;
 import petr.warehouse.inventory_management.repository.OperationRepo;
 import petr.warehouse.inventory_management.repository.StorageItemRepo;
 import petr.warehouse.inventory_management.model.Operation;
@@ -21,46 +23,60 @@ public class OperationService {
     @Autowired
     StorageItemRepo itemRepo;
 
-    public String opAdmission(Long storageId, String productName, Integer count, String comment){
-        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, storageId);
-        item.addCount(count);
+    public String opAdmission(Long storageId, OperationRequestDto requestBody){
+        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(requestBody.getProductName(), storageId);
+        if(item == null){
+            throw new EntityNotFoundException("Не удалось обновить продукт тк не его нет в базе данных!");
+        }
+        item.addCount(requestBody.getCount());
+        itemRepo.save(item);
 
         Operation operation = new Operation(item.getStorage().getName(),
                 OperationType.ADMISSION,
-                productName,
-                count,
+                requestBody.getProductName(),
+                requestBody.getCount(),
                 LocalDateTime.now(),
-                comment
+                requestBody.getComment()
                 );
         opRepo.save(operation);
         return "Операция выполнена!";
     }
 
-    public String opSell(Long storageId, String productName, Integer count, String comment) {
-        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, storageId);
-        item.minusCount(count);
+    public String opSell(Long storageId, OperationRequestDto requestBody) {
+        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(requestBody.getProductName(), storageId);
+        if(item == null){
+            throw new EntityNotFoundException("Не удалось обновить продукт тк не его нет в базе данных!");
+        }
+        //TODO проверки на отрицательность
+        item.minusCount(requestBody.getCount());
         itemRepo.save(item);
+
         Operation operation = new Operation(item.getStorage().getName(),
                 OperationType.SELL,
-                productName,
-                count,
+                requestBody.getProductName(),
+                requestBody.getCount(),
                 LocalDateTime.now(),
-                comment
+                requestBody.getComment()
         );
         opRepo.save(operation);
         return "Операция выполнена!";
     }
 
-    public String opWrightOff(Long storageId, String productName, Integer count, String comment) {
-        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(productName, storageId);
-        item.minusCount(count);
+    public String opWriteOff(Long storageId, OperationRequestDto requestBody) {
+        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(requestBody.getProductName(), storageId);
+        if(item == null){
+            throw new EntityNotFoundException("Не удалось обновить продукт тк не его нет в базе данных!");
+        }
+        //TODO проверки на отрицательность
+        item.minusCount(requestBody.getCount());
         itemRepo.save(item);
+
         Operation operation = new Operation(item.getStorage().getName(),
-                OperationType.WRIGHT_OFF,
-                productName,
-                count,
+                OperationType.WRITE_OFF,
+                requestBody.getProductName(),
+                requestBody.getCount(),
                 LocalDateTime.now(),
-                comment
+                requestBody.getComment()
         );
         opRepo.save(operation);
         return "Операция выполнена!";
