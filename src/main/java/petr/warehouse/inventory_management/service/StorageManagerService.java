@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import petr.warehouse.inventory_management.dto.OperationRequestDto;
 import petr.warehouse.inventory_management.dto.StorageDto;
+import petr.warehouse.inventory_management.dto.StorageInfoDto;
+import petr.warehouse.inventory_management.exception.DataExceptions.ProductNotFoundException;
 import petr.warehouse.inventory_management.exception.DataExceptions.StorageNotFoundException;
 import petr.warehouse.inventory_management.mapper.StorageMapper;
 import petr.warehouse.inventory_management.model.OperationType;
@@ -12,7 +14,10 @@ import petr.warehouse.inventory_management.model.Storage;
 import petr.warehouse.inventory_management.repository.StorageRepo;
 import petr.warehouse.inventory_management.model.StorageItem;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 //TODO проверить класс на транзакции, если требуются - добавить @Transactional
 
@@ -38,7 +43,7 @@ public class StorageManagerService {
         storage = storageOptional.orElse(null);
 
         if(storage == null){
-            throw new StorageNotFoundException("Хранилище не найдено!");
+            throw new StorageNotFoundException("Хранилище не найдено!", id);
         }
 
         return storageMapper.toDto(storage);
@@ -48,11 +53,7 @@ public class StorageManagerService {
         Storage storage = new Storage();
         storage.setName(storageName);
 
-        try{
-            storageRepo.save(storage);
-        } catch (Exception e){
-            throw new StorageNotFoundException("Хранилище не найдено!");
-        }
+        storageRepo.save(storage);
 
         return storage.getId();
     }
@@ -60,30 +61,31 @@ public class StorageManagerService {
     //DOTO Бросать ошибку а не возвращать строку
     public String addProduct(Long storageId, String itemName) {
         StorageItem newItem = new StorageItem(itemName, storageRepo.getReferenceById(storageId));
-        try{
-            itemRepo.save(newItem);
-        } catch (Exception e){
-            return "Error: couldn't create new item " + e.getMessage();
-        }
+        itemRepo.save(newItem);
         return "Item " + itemName + " created!";
-    }
-
-    public String executeOperation(Long storageId, OperationRequestDto requestBody) {
-        return switch (requestBody.getOperationType()) {
-            case ADMISSION -> operationService.opAdmission(storageId, requestBody);
-            case SELL -> operationService.opSell(storageId, requestBody);
-            case WRITE_OFF -> operationService.opWriteOff(storageId, requestBody);
-        };
     }
 
     //DOTO Бросать ошибку а не возвращать строку
     public String deleteProduct(Long storageId, Long productId) {
-        try{
-            itemRepo.deleteByIdAndStorageId(productId, storageId);
-        } catch (Exception e) {
-            return "Невозможно удалить продукт " + productId + ": " + e.getMessage();
+        int count = itemRepo.deleteByIdAndStorageId(productId, storageId);
+
+        if(count > 0){
+            return "Товар удален!";
+        } else {
+            throw new ProductNotFoundException("Товар не найден!", storageId, productId);
+        }
+    }
+
+    public List<StorageInfoDto> getAllStorages() {
+        List<StorageInfoDto> storageInfoDtos = new ArrayList<>();
+        List<Storage> storageList = storageRepo.findAll();
+
+        if(storageList.isEmpty()){
+            return storageInfoDtos;
         }
 
-        return "Продукт " + productId + " удален!";
+        storageInfoDtos = storageList.stream().map(storge -> storageMapper.toInfoDto(storge)).toList();
+
+        return storageInfoDtos;
     }
 }

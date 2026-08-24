@@ -1,14 +1,14 @@
 package petr.warehouse.inventory_management.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import petr.warehouse.inventory_management.dto.OperationRequestDto;
+import petr.warehouse.inventory_management.exception.DataExceptions.IllegalSellOrWriteOffCount;
+import petr.warehouse.inventory_management.exception.DataExceptions.ProductNotFoundException;
 import petr.warehouse.inventory_management.repository.OperationRepo;
 import petr.warehouse.inventory_management.repository.StorageItemRepo;
 import petr.warehouse.inventory_management.model.Operation;
-import petr.warehouse.inventory_management.model.OperationType;
 import petr.warehouse.inventory_management.model.StorageItem;
 
 import java.time.LocalDateTime;
@@ -23,62 +23,38 @@ public class OperationService {
     @Autowired
     StorageItemRepo itemRepo;
 
-    public String opAdmission(Long storageId, OperationRequestDto requestBody){
-        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(requestBody.getProductName(), storageId);
-        if(item == null){
-            throw new EntityNotFoundException("Не удалось обновить продукт тк не его нет в базе данных!");
+    public void executeOperation(Long storageId, OperationRequestDto requestBody){
+        StorageItem item = itemRepo.findByItemNameAndStorageId(requestBody.getProductName(), storageId)
+                .orElseThrow(() -> new ProductNotFoundException(
+                        "Товар не найден!", storageId, requestBody.getProductName()));
+
+        switch (requestBody.getOperationType()){
+            case ADMISSION -> {
+                item.addCount(requestBody.getCount());
+                itemRepo.save(item);
+            }
+            case SELL, WRITE_OFF -> {
+                if(requestBody.getCount() > item.getItemCount()){
+                    throw new IllegalSellOrWriteOffCount(
+                            "Invalid argument.",
+                            requestBody.getProductName(),
+                            requestBody.getCount()
+                    );
+                }
+
+                item.minusCount(requestBody.getCount());
+                itemRepo.save(item);
+            }
         }
-        item.addCount(requestBody.getCount());
-        itemRepo.save(item);
 
         Operation operation = new Operation(item.getStorage().getName(),
-                OperationType.ADMISSION,
-                requestBody.getProductName(),
-                requestBody.getCount(),
-                LocalDateTime.now(),
-                requestBody.getComment()
-                );
-        opRepo.save(operation);
-        return "Операция выполнена!";
-    }
-
-    public String opSell(Long storageId, OperationRequestDto requestBody) {
-        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(requestBody.getProductName(), storageId);
-        if(item == null){
-            throw new EntityNotFoundException("Не удалось обновить продукт тк не его нет в базе данных!");
-        }
-        //TODO проверки на отрицательность
-        item.minusCount(requestBody.getCount());
-        itemRepo.save(item);
-
-        Operation operation = new Operation(item.getStorage().getName(),
-                OperationType.SELL,
-                requestBody.getProductName(),
-                requestBody.getCount(),
-                LocalDateTime.now(),
-                requestBody.getComment()
-        );
-        opRepo.save(operation);
-        return "Операция выполнена!";
-    }
-
-    public String opWriteOff(Long storageId, OperationRequestDto requestBody) {
-        StorageItem item = itemRepo.getReferenceByItemNameAndStorageId(requestBody.getProductName(), storageId);
-        if(item == null){
-            throw new EntityNotFoundException("Не удалось обновить продукт тк не его нет в базе данных!");
-        }
-        //TODO проверки на отрицательность
-        item.minusCount(requestBody.getCount());
-        itemRepo.save(item);
-
-        Operation operation = new Operation(item.getStorage().getName(),
-                OperationType.WRITE_OFF,
+                requestBody.getOperationType(),
                 requestBody.getProductName(),
                 requestBody.getCount(),
                 LocalDateTime.now(),
                 requestBody.getComment()
         );
+
         opRepo.save(operation);
-        return "Операция выполнена!";
     }
 }

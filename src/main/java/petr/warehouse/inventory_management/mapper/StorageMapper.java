@@ -2,6 +2,7 @@ package petr.warehouse.inventory_management.mapper;
 
 import org.springframework.stereotype.Component;
 import petr.warehouse.inventory_management.dto.StorageDto;
+import petr.warehouse.inventory_management.dto.StorageInfoDto;
 import petr.warehouse.inventory_management.dto.StorageItemDto;
 import petr.warehouse.inventory_management.model.Storage;
 import petr.warehouse.inventory_management.model.StorageItem;
@@ -51,5 +52,17 @@ public class StorageMapper {
         storage.setItems(storageItemList);
 
         return storage;
+    }
+
+    public StorageInfoDto toInfoDto(Storage storage){
+        if(storage == null){
+            return null;
+        }
+
+        StorageInfoDto storageInfoDto = new StorageInfoDto();
+        storageInfoDto.setId(storage.getId());
+        storageInfoDto.setName(storage.getName());
+
+        return storageInfoDto;
     }
 }

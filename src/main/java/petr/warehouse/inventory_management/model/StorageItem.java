@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import petr.warehouse.inventory_management.exception.DataExceptions.IllegalSellOrWriteOffCount;
 
 @NoArgsConstructor
 @Setter
@@ -53,14 +54,10 @@ public class StorageItem {
         }
     }
 
-    public void minusCount(Integer countInt) {
-        if(itemCount - countInt >= 0){
-            itemCount -= countInt;
-            changeStatus();
-        } else {
-            throw new RuntimeException("На складе нет столько товара!");
-        }
+    public Integer minusCount(Integer minusCount) {
+        if(minusCount > itemCount) throw new IllegalSellOrWriteOffCount("Невозможно списать столько товара!", itemName, minusCount);
+        itemCount -= minusCount;
+        changeStatus();
+        return itemCount;
     }
-
-    //TODO написать похожую функцию для проверки статуса, либо для блокировки операции при нехватке продукции.
 }

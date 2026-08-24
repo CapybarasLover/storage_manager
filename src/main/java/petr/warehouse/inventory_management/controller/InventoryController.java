@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import petr.warehouse.inventory_management.dto.OperationDto;
 import petr.warehouse.inventory_management.dto.OperationRequestDto;
+import petr.warehouse.inventory_management.dto.StorageInfoDto;
 import petr.warehouse.inventory_management.filter.OperationFilter;
 import petr.warehouse.inventory_management.model.OperationType;
 import petr.warehouse.inventory_management.service.OperationService;
@@ -17,6 +18,7 @@ import petr.warehouse.inventory_management.service.StorageManagerService;
 import petr.warehouse.inventory_management.dto.StorageDto;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController()
 @RequestMapping("storage")
@@ -26,6 +28,11 @@ public class InventoryController {
 
     @Autowired
     OperationService operationService;
+
+    @GetMapping
+    ResponseEntity<List<StorageInfoDto>> getAllStorages(){
+        return ResponseEntity.ok(storageService.getAllStorages());
+    }
 
     //Получить данные склада по id
     @GetMapping("/{storageId}")
@@ -62,7 +69,7 @@ public class InventoryController {
             @PathVariable Long storageId,
             @Valid @RequestBody OperationRequestDto requestBody
     ){
-        storageService.executeOperation(storageId, requestBody);
+        operationService.executeOperation(storageId, requestBody);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
