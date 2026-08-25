@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Getter
@@ -17,7 +17,7 @@ public class Operation {
             OperationType operationType,
             String productName,
             int amount,
-            LocalDateTime operationDateTime,
+            Instant operationDateTime,
             String comment
     ){
         this.storageName = storageName;
@@ -47,7 +47,7 @@ public class Operation {
 
     //FIXME таймштамп не по локальному времени
     @Column(name = "operation_date_time", columnDefinition = "timestamptz")
-    private LocalDateTime operationDateTime;
+    private Instant operationDateTime;
 
     @Column(name = "comment")
     private String comment;

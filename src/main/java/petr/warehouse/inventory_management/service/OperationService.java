@@ -11,7 +11,7 @@ import petr.warehouse.inventory_management.repository.StorageItemRepo;
 import petr.warehouse.inventory_management.model.Operation;
 import petr.warehouse.inventory_management.model.StorageItem;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 //Класс для работы с операциями
 @Service
@@ -51,7 +51,7 @@ public class OperationService {
                 requestBody.getOperationType(),
                 requestBody.getProductName(),
                 requestBody.getCount(),
-                LocalDateTime.now(),
+                Instant.now(),
                 requestBody.getComment()
         );
 
