@@ -1,10 +1,8 @@
+server:
+  port: 8080
 spring:
   application:
     name: warehouse_inventory_management
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USER}
-    password: ${DB_PASS}
   jpa:
     hibernate:
       ddl-auto: validate
