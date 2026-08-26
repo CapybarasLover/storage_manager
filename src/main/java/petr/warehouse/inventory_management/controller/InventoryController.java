@@ -1,12 +1,16 @@
 package petr.warehouse.inventory_management.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import petr.warehouse.inventory_management.dto.OperationDto;
 import petr.warehouse.inventory_management.dto.OperationRequestDto;
@@ -21,6 +25,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController()
+@Validated
 @RequestMapping("storage")
 public class InventoryController {
     @Autowired
@@ -36,13 +41,13 @@ public class InventoryController {
 
     //Получить данные склада по id
     @GetMapping("/{storageId}")
-    ResponseEntity<StorageDto> getStorage(@PathVariable Long storageId){
+    ResponseEntity<StorageDto> getStorage(@PathVariable @Positive Long storageId){
         return ResponseEntity.ok(storageService.getStorageById(storageId));
     }
 
     //Добавить склад
     @PostMapping
-    ResponseEntity<Void> postNewStorage(@RequestParam String name){
+    ResponseEntity<Void> postNewStorage(@RequestParam @NotBlank @Size(max = 25) String name){
         Long storageId = storageService.createStorage(name);
         URI location = URI.create("/storage/" + storageId);
         return ResponseEntity.created(location).build();
@@ -50,7 +55,7 @@ public class InventoryController {
 
     //Добавить новый продукт
     @PostMapping("/{storageId}/products")
-    ResponseEntity<Void> postNewProduct(@PathVariable Long storageId, @RequestParam String productName){
+    ResponseEntity<Void> postNewProduct(@PathVariable @Positive Long storageId, @NotBlank @Size(max = 100) @RequestParam String productName){
         storageService.addProduct(storageId, productName);
         URI location = URI.create("/storage/" + storageId + "/products/" + productName);
         return ResponseEntity.created(location).build();
@@ -58,7 +63,7 @@ public class InventoryController {
 
     //Удалить продукт
     @DeleteMapping("/{storageId}/products/{productId}")
-    ResponseEntity<?> deleteProduct(@PathVariable Long storageId, @PathVariable Long productId){
+    ResponseEntity<?> deleteProduct(@PathVariable @Positive Long storageId, @PathVariable @Positive Long productId){
         storageService.deleteProduct(storageId, productId);
         return ResponseEntity.noContent().build();
     }
@@ -66,7 +71,7 @@ public class InventoryController {
     //Изменить продукт
     @PatchMapping("/{storageId}/operation")
     public ResponseEntity<Void> executeOperation(
-            @PathVariable Long storageId,
+            @PathVariable @Positive Long storageId,
             @Valid @RequestBody OperationRequestDto requestBody
     ){
         operationService.executeOperation(storageId, requestBody);
