@@ -3,3 +3,5 @@ spring:
     url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASS}
+server:
+  port: 8080

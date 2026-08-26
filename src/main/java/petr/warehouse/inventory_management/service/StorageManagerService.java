@@ -35,16 +35,12 @@ public class StorageManagerService {
     @Autowired
     OperationService operationService;
 
-    public StorageDto getStorageById(Long id){
-        Optional<Storage> storageOptional = storageRepo.findById(id);
+    public StorageDto getStorageById(Long storageId){
+        Optional<Storage> storageOptional = storageRepo.findById(storageId);
 
-        Storage storage;
-
-        storage = storageOptional.orElse(null);
-
-        if(storage == null){
-            throw new StorageNotFoundException("Хранилище не найдено!", id);
-        }
+        Storage storage = storageOptional.orElseThrow(
+                () -> new StorageNotFoundException(
+                        "404: Такой склад не найден!", storageId));
 
         return storageMapper.toDto(storage);
     }
@@ -60,8 +56,16 @@ public class StorageManagerService {
 
     //DOTO Бросать ошибку а не возвращать строку
     public String addProduct(Long storageId, String itemName) {
-        StorageItem newItem = new StorageItem(itemName, storageRepo.getReferenceById(storageId));
+        Optional<Storage> storageOptional = storageRepo.findById(storageId);
+
+        Storage storage = storageOptional.orElseThrow(
+                () -> new StorageNotFoundException(
+                        "404: Не удалось добавить продукт на склад тк такой склад не найден!"
+                        , storageId));
+
+        StorageItem newItem = new StorageItem(itemName, storage);
         itemRepo.save(newItem);
+
         return "Item " + itemName + " created!";
     }
 

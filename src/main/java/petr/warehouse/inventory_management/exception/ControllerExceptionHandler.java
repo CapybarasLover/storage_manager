@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import petr.warehouse.inventory_management.exception.DataExceptions.IllegalSellOrWriteOffCount;
 import petr.warehouse.inventory_management.exception.DataExceptions.ProductNotFoundException;
 import petr.warehouse.inventory_management.exception.DataExceptions.StorageNotFoundException;
 
@@ -21,5 +22,10 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> handleProductNotFound(ProductNotFoundException e, WebRequest webRequest){
         System.out.println(webRequest);
         return new ResponseEntity<>("404: " + "Товар не найден", HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<?> handleProductIllegalOperation(IllegalSellOrWriteOffCount e, WebRequest webRequest){
+        System.out.println(webRequest);
+        return new ResponseEntity<>("400: " + "На складе недостаточно товара!", HttpStatus.NOT_FOUND);
     }
 }

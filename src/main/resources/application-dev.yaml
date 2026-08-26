@@ -3,3 +3,5 @@ spring:
     url: jdbc:postgresql://localhost:5430/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASS}
+server:
+  port: 8081

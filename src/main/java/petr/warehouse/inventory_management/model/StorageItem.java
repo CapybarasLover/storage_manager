@@ -10,7 +10,9 @@ import petr.warehouse.inventory_management.exception.DataExceptions.IllegalSellO
 @NoArgsConstructor
 @Setter
 @Getter
-@Table(name = "Item")
+@Table(name = "Item", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"item", "storage_id"})
+})
 @Entity
 public class StorageItem {
     public StorageItem(String itemName, Storage storage){
