@@ -57,7 +57,6 @@ public class StorageItem {
     }
 
     public Integer minusCount(Integer minusCount) {
-        if(minusCount > itemCount) throw new IllegalSellOrWriteOffCount("Невозможно списать столько товара!", itemName, minusCount);
         itemCount -= minusCount;
         changeStatus();
         return itemCount;

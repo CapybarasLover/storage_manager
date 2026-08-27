@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import petr.warehouse.inventory_management.model.OperationType;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,7 +13,7 @@ public class OperationDto {
     private String storageName;
     private OperationType operationType;
     private String productName;
-    private int amount;
-    private LocalDateTime operationDateTime;
+    private Integer amount;
+    private Instant operationDateTime;
     private String comment;
 }

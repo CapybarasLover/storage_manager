@@ -5,9 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import org.apache.coyote.Response;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -78,14 +81,17 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @GetMapping("/operations")
-//    public Page<OperationDto> getOperations(
-//            OperationFilter filter,
-//            Pageable pageable
-//    ) {
-//        return operationService.getOperations(
-//                filter,
-//                pageable
-//        );
-//    }
+    @GetMapping("/operations")
+    public Page<OperationDto> getOperations(
+            @ParameterObject @Valid OperationFilter filter,
+            @ParameterObject @PageableDefault(size = 20, sort = "operationDateTime", direction = Sort.Direction.DESC) Pageable pageable
+            ) {
+        if(filter == null){
+            filter = new OperationFilter();
+        }
+        return operationService.getOperations(
+                filter,
+                pageable
+        );
+    }
 }
