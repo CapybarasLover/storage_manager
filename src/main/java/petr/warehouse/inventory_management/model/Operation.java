@@ -45,7 +45,6 @@ public class Operation {
     @Column(name = "amount")
     private int amount;
 
-    //FIXME таймштамп не по локальному времени
     @Column(name = "operation_date_time", columnDefinition = "timestamptz")
     private Instant operationDateTime;
 

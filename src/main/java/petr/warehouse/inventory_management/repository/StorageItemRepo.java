@@ -9,12 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface StorageItemRepo extends JpaRepository<StorageItem, Long> {
-    StorageItem getReferenceByItemName(String productName);
-
     Optional<StorageItem> findByItemNameAndStorageId(String productName, Long storageId);
-
-    @Transactional
-    void deleteByItemNameAndStorageId(String productName, Long storageId);
 
     @Transactional
     int deleteByIdAndStorageId(Long Id, Long storageId);

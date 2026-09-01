@@ -70,7 +70,7 @@ public class OperationService {
 
     public Page<OperationDto> getOperations(OperationFilter filter, Pageable pageable){
         Specification<Operation> specification = Specification
-                .where(OperationSpecifications.hasStorageName(filter.getStorageName()))
+                .allOf(OperationSpecifications.hasStorageName(filter.getStorageName()))
                 .and(OperationSpecifications.hasOperationType(filter.getOperationType()))
                 .and(OperationSpecifications.hasProductName(filter.getProductName()))
                 .and(OperationSpecifications.inDateRange(filter.getDateFrom(), filter.getDateTo()));

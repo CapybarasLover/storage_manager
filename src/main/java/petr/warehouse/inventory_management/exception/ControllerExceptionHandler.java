@@ -1,6 +1,5 @@
 package petr.warehouse.inventory_management.exception;
 
-import org.springframework.boot.micrometer.observation.autoconfigure.ObservationProperties;
 import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -54,4 +53,5 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 .map(fe -> Map.of("field", fe.getField(), "message", fe.getDefaultMessage()))
                 .toList());
         return handleExceptionInternal(ex, problemDetail, headers, HttpStatus.BAD_REQUEST, request);
-    }    }
+    }
+}

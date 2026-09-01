@@ -34,3 +34,5 @@ build/
 /run_wsl_claude_in_curr_dir.bat
 /.env
 /ROADMAP.md
+/project_architecture_full.txt
+/ROADMAP_V1.md

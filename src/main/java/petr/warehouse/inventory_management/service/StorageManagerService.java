@@ -54,7 +54,6 @@ public class StorageManagerService {
         return storage.getId();
     }
 
-    //DOTO Бросать ошибку а не возвращать строку
     public String addProduct(Long storageId, String itemName) {
         Optional<Storage> storageOptional = storageRepo.findById(storageId);
 
@@ -69,7 +68,6 @@ public class StorageManagerService {
         return "Item " + itemName + " created!";
     }
 
-    //DOTO Бросать ошибку а не возвращать строку
     public String deleteProduct(Long storageId, Long productId) {
         int count = itemRepo.deleteByIdAndStorageId(productId, storageId);
 

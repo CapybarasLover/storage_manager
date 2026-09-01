@@ -3,9 +3,6 @@ package petr.warehouse.inventory_management.mapper;
 import org.springframework.stereotype.Component;
 import petr.warehouse.inventory_management.dto.OperationDto;
 import petr.warehouse.inventory_management.model.Operation;
-import petr.warehouse.inventory_management.model.OperationType;
-
-import java.time.LocalDateTime;
 
 @Component
 public class OperationMapper {
@@ -34,11 +31,4 @@ public class OperationMapper {
 
         return operation;
     }
-
-//    private String storageName;
-//    private OperationType operationType;
-//    private String productName;
-//    private int amount;
-//    private LocalDateTime operationDateTime;
-//    private String comment;
 }

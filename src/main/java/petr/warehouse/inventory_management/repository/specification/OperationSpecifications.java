@@ -2,7 +2,6 @@ package petr.warehouse.inventory_management.repository.specification;
 
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.domain.Specification;
 import petr.warehouse.inventory_management.model.Operation;
 import petr.warehouse.inventory_management.model.OperationType;
@@ -34,20 +33,19 @@ public class OperationSpecifications {
                 criteriaBuilder.equal(root.get("productName"), productName);
     }
 
-    //TODO Написать спецификацию для фильтрации по датам
     public static Specification<Operation> inDateRange(LocalDate from, LocalDate to) {
-        return (root, query, cb) -> {
+        return (root, query, criteriaBuilder) -> {
             if (from == null && to == null) return null;
 
             Path<Instant> path = root.get("operationDateTime");
             List<Predicate> predicates = new ArrayList<>();
             if (from != null) {
-                predicates.add(cb.greaterThanOrEqualTo(path, from.atStartOfDay(ZONE).toInstant()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(path, from.atStartOfDay(ZONE).toInstant()));
             }
             if (to != null) {
-                predicates.add(cb.lessThan(path, to.plusDays(1).atStartOfDay(ZONE).toInstant()));
+                predicates.add(criteriaBuilder.lessThan(path, to.plusDays(1).atStartOfDay(ZONE).toInstant()));
             }
-            return cb.and(predicates.toArray(new Predicate[0]));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 }

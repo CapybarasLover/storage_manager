@@ -5,7 +5,6 @@ import lombok.Setter;
 import petr.warehouse.inventory_management.model.OperationType;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
