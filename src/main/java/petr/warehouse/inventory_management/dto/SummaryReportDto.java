@@ -1,17 +1,30 @@
 package petr.warehouse.inventory_management.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import petr.warehouse.inventory_management.service.ReportService;
-
 import java.time.Instant;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
-@Getter
-@Setter
-public class SummaryReportDto {
-    private Instant generatedDate;
-    private Long storageId;
-    private String storageName;
-    private Instant dateFrom;
-    private Instant dateTo;
+
+public record SummaryReportDto(
+        String storageName,
+        LocalDate dateFrom,
+        LocalDate dateTo,
+        Instant generatedAt,
+        List<StorageItemDto> currentStock,
+        Aggregates aggregates,
+        Map<String, ProductStats> productStats
+) {
+    //TODO добавить поля для каждого продукта и общее: прибыль
+    public record Aggregates(
+            int admissionsCount, int admissionsTotal,
+            int sellsCount,      int sellsTotal,
+            int writeOffsCount,  int writeOffsTotal
+    ) {}
+
+    public record ProductStats(
+            int admissionsCount, int admissionsTotal,
+            int sellsCount,      int sellsTotal,
+            int writeOffsCount,  int writeOffsTotal
+    ) {}
 }

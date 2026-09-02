@@ -40,6 +40,8 @@ public class StorageItem {
     @Enumerated(EnumType.STRING)
     private ItemStatus itemStatus;
 
+    //TODO Добавить поле с ценой + миграция на добавление поля
+
     public void addCount(Integer itemCount){
         this.itemCount += itemCount;
         changeStatus();

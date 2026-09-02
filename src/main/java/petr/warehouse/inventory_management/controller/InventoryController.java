@@ -42,13 +42,13 @@ public class InventoryController {
 
     //Получить данные склада по id
     @GetMapping("/{storageId}")
-    ResponseEntity<StorageDto> getStorage(@PathVariable @Positive Long storageId){
+    public ResponseEntity<StorageDto> getStorage(@PathVariable @Positive Long storageId){
         return ResponseEntity.ok(storageService.getStorageById(storageId));
     }
 
     //Добавить склад
     @PostMapping
-    ResponseEntity<Void> postNewStorage(@RequestParam @NotBlank @Size(max = 25) String name){
+    public ResponseEntity<Void> postNewStorage(@RequestParam @NotBlank @Size(max = 25) String name){
         Long storageId = storageService.createStorage(name);
         URI location = URI.create("/storage/" + storageId);
         return ResponseEntity.created(location).build();
@@ -56,7 +56,7 @@ public class InventoryController {
 
     //Добавить новый продукт
     @PostMapping("/{storageId}/products")
-    ResponseEntity<Void> postNewProduct(@PathVariable @Positive Long storageId, @NotBlank @Size(max = 100) @RequestParam String productName){
+    public ResponseEntity<Void> postNewProduct(@PathVariable @Positive Long storageId, @NotBlank @Size(max = 100) @RequestParam String productName){
         storageService.addProduct(storageId, productName);
         URI location = URI.create("/storage/" + storageId + "/products/" + productName);
         return ResponseEntity.created(location).build();
@@ -64,7 +64,7 @@ public class InventoryController {
 
     //Удалить продукт
     @DeleteMapping("/{storageId}/products/{productId}")
-    ResponseEntity<?> deleteProduct(@PathVariable @Positive Long storageId, @PathVariable @Positive Long productId){
+    public ResponseEntity<?> deleteProduct(@PathVariable @Positive Long storageId, @PathVariable @Positive Long productId){
         storageService.deleteProduct(storageId, productId);
         return ResponseEntity.noContent().build();
     }
