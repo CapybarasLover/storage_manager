@@ -84,9 +84,6 @@ public class InventoryController {
             @ParameterObject @Valid OperationFilter filter,
             @ParameterObject @PageableDefault(size = 20, sort = "operationDateTime", direction = Sort.Direction.DESC) Pageable pageable
             ) {
-        if(filter == null){
-            filter = new OperationFilter();
-        }
         return operationService.getOperations(
                 filter,
                 pageable

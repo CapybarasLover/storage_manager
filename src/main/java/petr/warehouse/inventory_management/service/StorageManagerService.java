@@ -1,5 +1,6 @@
 package petr.warehouse.inventory_management.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import petr.warehouse.inventory_management.dto.OperationRequestDto;
@@ -22,6 +23,7 @@ import java.util.stream.Stream;
 //TODO проверить класс на транзакции, если требуются - добавить @Transactional
 
 @Service
+@Transactional
 public class StorageManagerService {
     @Autowired
     StorageRepo storageRepo;

@@ -11,6 +11,5 @@ import java.util.Optional;
 public interface StorageItemRepo extends JpaRepository<StorageItem, Long> {
     Optional<StorageItem> findByItemNameAndStorageId(String productName, Long storageId);
 
-    @Transactional
     int deleteByIdAndStorageId(Long Id, Long storageId);
 }

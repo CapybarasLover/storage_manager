@@ -14,13 +14,4 @@ public class ReportService {
 
     @Autowired
     OperationRepo operationRepo;
-
-    // TODO этот метод должен возвращать сформированный отчет, переименовать изменить логику
-//    public List<Operation> getMonthlyReportByStorageName(String storageName, Month month, int year){
-//            LocalDateTime from = LocalDateTime.of(year, month, 1, 0, 0, 0);
-//            LocalDateTime to = from.plusMonths(1);
-//
-//        return operationRepo.
-//                findByStorageNameAndOperationDateTimeBetween(storageName, from, to);
-//    }
 }

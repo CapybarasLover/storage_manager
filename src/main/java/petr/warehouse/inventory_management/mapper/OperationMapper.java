@@ -18,17 +18,4 @@ public class OperationMapper {
 
         return dto;
     }
-
-    public Operation toOperation(OperationDto dto){
-        Operation operation = new Operation();
-
-        operation.setStorageName(dto.getStorageName());
-        operation.setProductName(dto.getProductName());
-        operation.setOperationType(dto.getOperationType());
-        operation.setAmount(dto.getAmount());
-        operation.setOperationDateTime(dto.getOperationDateTime());
-        operation.setComment(dto.getComment());
-
-        return operation;
-    }
 }
