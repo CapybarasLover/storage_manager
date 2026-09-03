@@ -11,6 +11,7 @@ import petr.warehouse.inventory_management.repository.StorageItemRepo;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -29,7 +30,12 @@ public class ReportService {
     public SummaryReportDto createNewReport(String storageName, LocalDate dateFrom, LocalDate dateTo) {
         SummaryReportDto reportDto = null;
 
-        List<Object> listOfGroupedOperations = operationRepo.groupOperationsForReport(storageName, dateFrom, dateTo);
+        ZoneId zone = ZoneId.of("Europe/Moscow"); // совпадает с конфигом приложения
+
+        Instant from = dateFrom.atStartOfDay(zone).toInstant();
+        Instant to   = dateTo.plusDays(1).atStartOfDay(zone).toInstant();
+
+        List<Object> listOfGroupedOperations = operationRepo.groupOperationsForReport(storageName, from, to);
         if (listOfGroupedOperations.isEmpty()) {
             //TODO Поменять на кастомное исключение!
             throw new RuntimeException("No such operation");

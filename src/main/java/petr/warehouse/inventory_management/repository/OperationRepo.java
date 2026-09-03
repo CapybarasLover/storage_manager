@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import petr.warehouse.inventory_management.model.Operation;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -17,5 +18,5 @@ public interface OperationRepo extends JpaRepository<Operation, Long>, JpaSpecif
             "FROM Operation o " +
             "WHERE o.storageName = :storageName AND o.operationDateTime BETWEEN :from AND :to " +
             "GROUP BY o.productName, o.operationType")
-    List<Object> groupOperationsForReport(String storageName, LocalDate from, LocalDate to);
+    List<Object> groupOperationsForReport(String storageName, Instant from, Instant to);
 }
