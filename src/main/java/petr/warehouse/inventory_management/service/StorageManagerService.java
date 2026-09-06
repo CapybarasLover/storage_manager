@@ -88,7 +88,9 @@ public class StorageManagerService {
             return storageInfoDtos;
         }
 
-        storageInfoDtos = storageList.stream().map(storge -> storageMapper.toInfoDto(storge)).toList();
+        storageInfoDtos = storageList.stream().map(
+                storge -> storageMapper.toInfoDto(storge)
+        ).toList();
 
         return storageInfoDtos;
     }

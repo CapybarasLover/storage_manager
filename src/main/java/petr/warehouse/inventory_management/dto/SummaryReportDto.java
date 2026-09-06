@@ -12,11 +12,11 @@ public record SummaryReportDto(
         LocalDate dateTo,
         Instant generatedAt,
         List<StorageItemDto> currentStock,
-        Aggregates aggregates,
+        Stats stats,
         Map<String, ProductStats> productStats
 ) {
     //TODO добавить поля для каждого продукта и общее: прибыль
-    public record Aggregates(
+    public record Stats(
             int admissionsCount, int admissionsTotal,
             int sellsCount,      int sellsTotal,
             int writeOffsCount,  int writeOffsTotal

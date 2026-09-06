@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
@@ -39,6 +40,8 @@ public class Operation {
     @Enumerated(value = EnumType.STRING)
     private OperationType operationType;
 
+
+
     @Column(name = "product_name")
     private String productName;
 
@@ -47,6 +50,9 @@ public class Operation {
 
     @Column(name = "operation_date_time", columnDefinition = "timestamptz")
     private Instant operationDateTime;
+
+    @Column(name = "operation_cost")
+    private BigDecimal operationCost;
 
     @Column(name = "comment")
     private String comment;

@@ -44,7 +44,8 @@ public class ReportService {
         List<StorageItem> items = storageItemRepo.findAllByStorage_Name(storageName);
         List<StorageItemDto> currentStock = items.stream().map(StorageItemMapper::toDto).toList();
 
-//        SummaryReportDto.Aggregates aggregates = new SummaryReportDto.Aggregates();
+//        SummaryReportDto.Stats productStats = getStats(true, listOfGroupedOperations);
+//        SummaryReportDto.Stats storageStats = getStats(true, listOfGroupedOperations);
 
         Instant generatedTime = Instant.now();
 
@@ -54,8 +55,15 @@ public class ReportService {
 //                dateTo,
 //                generatedTime,
 //                currentStock,
+//                storageStats,
 //
 //                );
         return reportDto;
+    }
+
+    private SummaryReportDto.Stats getStats(List<Object> rawStats){
+        int
+
+        return new SummaryReportDto.Stats();
     }
 }
