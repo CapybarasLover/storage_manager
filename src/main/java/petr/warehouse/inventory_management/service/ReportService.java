@@ -5,65 +5,85 @@ import org.springframework.stereotype.Service;
 import petr.warehouse.inventory_management.dto.StorageItemDto;
 import petr.warehouse.inventory_management.dto.SummaryReportDto;
 import petr.warehouse.inventory_management.mapper.StorageItemMapper;
-import petr.warehouse.inventory_management.model.StorageItem;
+import petr.warehouse.inventory_management.model.OperationType;
 import petr.warehouse.inventory_management.repository.OperationRepo;
 import petr.warehouse.inventory_management.repository.StorageItemRepo;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReportService {
 
-    @Autowired
-    OperationRepo operationRepo;
+    @Autowired OperationRepo operationRepo;
+    @Autowired StorageItemRepo storageItemRepo;
 
-    @Autowired
-    StorageItemRepo storageItemRepo;
-
-    @Autowired
-    StorageItemMapper itemMapper;
-
-    //TODO Завершить метод
-    public SummaryReportDto createNewReport(String storageName, LocalDate dateFrom, LocalDate dateTo) {
-        SummaryReportDto reportDto = null;
-
-        ZoneId zone = ZoneId.of("Europe/Moscow"); // совпадает с конфигом приложения
-
+    public SummaryReportDto createNewReport(String storageName, LocalDate dateFrom, LocalDate dateTo, BigDecimal spending) {
+        ZoneId zone = ZoneId.of("Europe/Moscow");
         Instant from = dateFrom.atStartOfDay(zone).toInstant();
-        Instant to   = dateTo.plusDays(1).atStartOfDay(zone).toInstant();
+        Instant to = dateTo.plusDays(1).atStartOfDay(zone).toInstant();
 
-        List<Object> listOfGroupedOperations = operationRepo.groupOperationsForReport(storageName, from, to);
-        if (listOfGroupedOperations.isEmpty()) {
-            //TODO Поменять на кастомное исключение!
-            throw new RuntimeException("No such operation");
+        //TODO добавить работу с ценой операций и выручку (плюс возврат потраченных средств spending)
+        List<Object> rawRows = operationRepo.groupOperationsForReport(storageName, from, to);
+
+        if (rawRows.isEmpty()) {
+            throw new RuntimeException("No operations found for the given period");
         }
 
-        List<StorageItem> items = storageItemRepo.findAllByStorage_Name(storageName);
-        List<StorageItemDto> currentStock = items.stream().map(StorageItemMapper::toDto).toList();
+        Map<String, SummaryReportDto.ProductStats> productStats = new HashMap<>();
+        int totalAdmCount = 0, totalAdmTotal = 0;
+        int totalSellCount = 0, totalSellTotal = 0;
+        int totalWoCount  = 0, totalWoTotal  = 0;
 
-//        SummaryReportDto.Stats productStats = getStats(true, listOfGroupedOperations);
-//        SummaryReportDto.Stats storageStats = getStats(true, listOfGroupedOperations);
+        for (Object row : rawRows) {
+            Object[] cols = (Object[]) row;
+            String productName = (String) cols[0];
+            OperationType opType = (OperationType) cols[1];
+            int ops = ((Long) cols[2]).intValue();
+            int total = ((Long) cols[3]).intValue();
 
-        Instant generatedTime = Instant.now();
+            SummaryReportDto.ProductStats prev = productStats.getOrDefault(
+                    productName, new SummaryReportDto.ProductStats(0, 0, 0, 0, 0, 0));
+            SummaryReportDto.ProductStats updated = switch (opType) {
+                case ADMISSION -> new SummaryReportDto.ProductStats(
+                        prev.admissionsCount() + ops, prev.admissionsTotal() + total,
+                        prev.sellsCount(), prev.sellsTotal(),
+                        prev.writeOffsCount(), prev.writeOffsTotal());
+                case SELL -> new SummaryReportDto.ProductStats(
+                        prev.admissionsCount(), prev.admissionsTotal(),
+                        prev.sellsCount() + ops, prev.sellsTotal() + total,
+                        prev.writeOffsCount(), prev.writeOffsTotal());
+                case WRITE_OFF -> new SummaryReportDto.ProductStats(
+                        prev.admissionsCount(), prev.admissionsTotal(),
+                        prev.sellsCount(), prev.sellsTotal(),
+                        prev.writeOffsCount() + ops, prev.writeOffsTotal() + total);
+            };
+            productStats.put(productName, updated);
 
-//        reportDto = new SummaryReportDto(
-//                storageName,
-//                dateFrom,
-//                dateTo,
-//                generatedTime,
-//                currentStock,
-//                storageStats,
-//
-//                );
-        return reportDto;
-    }
+            switch (opType) {
+                case ADMISSION -> { totalAdmCount  += ops; totalAdmTotal  += total; }
+                case SELL      -> { totalSellCount += ops; totalSellTotal += total; }
+                case WRITE_OFF -> { totalWoCount   += ops; totalWoTotal   += total; }
+            }
+        }
 
-    private SummaryReportDto.Stats getStats(List<Object> rawStats){
-        int
+        SummaryReportDto.Stats stats = new SummaryReportDto.Stats(
+                totalAdmCount,  totalAdmTotal,
+                totalSellCount, totalSellTotal,
+                totalWoCount,   totalWoTotal
+        );
 
-        return new SummaryReportDto.Stats();
+        List<StorageItemDto> currentStock = storageItemRepo
+                .findAllByStorage_Name(storageName)
+                .stream()
+                .map(StorageItemMapper::toDto)
+                .toList();
+
+        return new SummaryReportDto(storageName, dateFrom, dateTo, Instant.now(), currentStock, stats, productStats);
     }
 }

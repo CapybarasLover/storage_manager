@@ -40,8 +40,6 @@ public class Operation {
     @Enumerated(value = EnumType.STRING)
     private OperationType operationType;
 
-
-
     @Column(name = "product_name")
     private String productName;
 

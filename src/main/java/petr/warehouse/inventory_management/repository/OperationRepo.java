@@ -7,9 +7,7 @@ import org.springframework.stereotype.Repository;
 import petr.warehouse.inventory_management.model.Operation;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 @Repository
 public interface OperationRepo extends JpaRepository<Operation, Long>, JpaSpecificationExecutor<Operation> {

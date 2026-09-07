@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import petr.warehouse.inventory_management.dto.SummaryReportDto;
 import petr.warehouse.inventory_management.service.ReportService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @RestController
@@ -21,8 +22,9 @@ public class ReportController {
     public ResponseEntity<SummaryReportDto> getReportSummary(
             @RequestParam String storageName,
             @RequestParam LocalDate dateFrom,
-            @RequestParam LocalDate dateTo
+            @RequestParam LocalDate dateTo,
+            @RequestParam BigDecimal spending
             ){
-        return ResponseEntity.ok(reportService.createNewReport(storageName, dateFrom, dateTo));
+        return ResponseEntity.ok(reportService.createNewReport(storageName, dateFrom, dateTo, spending));
     }
 }
