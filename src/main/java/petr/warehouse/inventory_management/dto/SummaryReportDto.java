@@ -15,16 +15,17 @@ public record SummaryReportDto(
         Stats stats,
         Map<String, ProductStats> productStats
 ) {
-    //TODO добавить поля для каждого продукта и общее: прибыль
     public record Stats(
             int admissionsCount, int admissionsTotal,
             int sellsCount,      int sellsTotal,
-            int writeOffsCount,  int writeOffsTotal
+            int writeOffsCount,  int writeOffsTotal,
+            int spending, int productProfit
     ) {}
 
     public record ProductStats(
             int admissionsCount, int admissionsTotal,
             int sellsCount,      int sellsTotal,
-            int writeOffsCount,  int writeOffsTotal
+            int writeOffsCount,  int writeOffsTotal,
+            int productSpending, int productProfit
     ) {}
 }

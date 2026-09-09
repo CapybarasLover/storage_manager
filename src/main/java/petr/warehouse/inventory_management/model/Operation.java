@@ -49,6 +49,8 @@ public class Operation {
     @Column(name = "operation_date_time", columnDefinition = "timestamptz")
     private Instant operationDateTime;
 
+    //Если это поступление - то стоимость операции это стоимость ВСЕГО поступления,
+    //Если это продажа - стоимость ВСЕЙ продажи
     @Column(name = "operation_cost")
     private BigDecimal operationCost;
 

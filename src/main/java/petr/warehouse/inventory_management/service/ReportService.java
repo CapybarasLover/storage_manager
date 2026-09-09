@@ -36,9 +36,13 @@ public class ReportService {
         }
 
         Map<String, SummaryReportDto.ProductStats> productStats = new HashMap<>();
-        int totalAdmCount = 0, totalAdmTotal = 0;
-        int totalSellCount = 0, totalSellTotal = 0;
-        int totalWoCount  = 0, totalWoTotal  = 0;
+        int totalAdmCount = 0;
+        int totalAdmTotal = 0;
+        int totalSellCount = 0;
+        int totalSellTotal = 0;
+        int totalWoCount  = 0;
+        int totalWoTotal  = 0;
+
 
         for (Object row : rawRows) {
             Object[] cols = (Object[]) row;
