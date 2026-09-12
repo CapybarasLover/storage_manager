@@ -1,4 +1,4 @@
-package petr.warehouse.inventory_management.exception.DataExceptions;
+package petr.warehouse.inventory_management.exception.dataExceptions;
 
 public class ProductNotFoundException extends RuntimeException{
 

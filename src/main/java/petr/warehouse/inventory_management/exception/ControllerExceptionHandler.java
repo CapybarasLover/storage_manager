@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import petr.warehouse.inventory_management.exception.DataExceptions.IllegalSellOrWriteOffCount;
-import petr.warehouse.inventory_management.exception.DataExceptions.ProductNotFoundException;
-import petr.warehouse.inventory_management.exception.DataExceptions.StorageNotFoundException;
+import petr.warehouse.inventory_management.exception.dataExceptions.IllegalSellOrWriteOffCount;
+import petr.warehouse.inventory_management.exception.dataExceptions.ProductNotFoundException;
+import petr.warehouse.inventory_management.exception.dataExceptions.StorageNotFoundException;
+import petr.warehouse.inventory_management.exception.requestException.ZeroOrNullAdmissionCost;
 
 import java.util.Map;
 
@@ -37,6 +38,15 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
                 "На складе недостаточно товара!");
+        System.out.println(webRequest);
+        return problemDetail;
+    }
+
+    @ExceptionHandler
+    public ProblemDetail handleZeroOrNullAdmissionCost(ZeroOrNullAdmissionCost e, WebRequest webRequest){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                "Не указана цена поступления");
         System.out.println(webRequest);
         return problemDetail;
     }

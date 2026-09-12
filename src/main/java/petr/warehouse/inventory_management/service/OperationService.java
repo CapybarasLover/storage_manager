@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import petr.warehouse.inventory_management.dto.OperationDto;
 import petr.warehouse.inventory_management.dto.OperationRequestDto;
-import petr.warehouse.inventory_management.exception.DataExceptions.IllegalSellOrWriteOffCount;
-import petr.warehouse.inventory_management.exception.DataExceptions.ProductNotFoundException;
+import petr.warehouse.inventory_management.exception.dataExceptions.IllegalSellOrWriteOffCount;
+import petr.warehouse.inventory_management.exception.dataExceptions.ProductNotFoundException;
 import petr.warehouse.inventory_management.filter.OperationFilter;
 import petr.warehouse.inventory_management.mapper.OperationMapper;
 import petr.warehouse.inventory_management.repository.OperationRepo;
@@ -41,6 +41,10 @@ public class OperationService {
 
         switch (requestBody.getOperationType()){
             case ADMISSION -> {
+                if(requestBody.getOperationCost().equals(BigDecimal.ZERO) || requestBody.getOperationCost() == null){
+                    throw new
+                }
+
                 item.addCount(requestBody.getCount());
                 itemRepo.save(item);
                 Operation admissionOperation = Operation.createAdmissionOperation(
