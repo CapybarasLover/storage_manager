@@ -9,6 +9,7 @@ import petr.warehouse.inventory_management.model.OperationType;
 import petr.warehouse.inventory_management.repository.OperationRepo;
 import petr.warehouse.inventory_management.repository.StorageItemRepo;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -27,9 +28,9 @@ public class ReportService {
         Instant from = dateFrom.atStartOfDay(zone).toInstant();
         Instant to = dateTo.plusDays(1).atStartOfDay(zone).toInstant();
 
-        //TODO добавить работу с ценой операций и выручку (плюс возврат потраченных средств spending)
         List<Object> rawRows = operationRepo.groupOperationsForReport(storageName, from, to);
 
+        //TODO кастомное исключение
         if (rawRows.isEmpty()) {
             throw new RuntimeException("No operations found for the given period");
         }
@@ -41,7 +42,9 @@ public class ReportService {
         int totalSellTotal = 0;
         int totalWoCount  = 0;
         int totalWoTotal  = 0;
-
+        BigDecimal spending = BigDecimal.ZERO;
+        BigDecimal revenue = BigDecimal.ZERO;
+        BigDecimal profit;
 
         for (Object row : rawRows) {
             Object[] cols = (Object[]) row;
@@ -49,43 +52,64 @@ public class ReportService {
             OperationType opType = (OperationType) cols[1];
             int ops = ((Long) cols[2]).intValue();
             int total = ((Long) cols[3]).intValue();
+            BigDecimal operationCost = (BigDecimal) cols[4];
+
 
             SummaryReportDto.ProductStats prev = productStats.getOrDefault(
-                    productName, new SummaryReportDto.ProductStats(
+                    productName,
+                    new SummaryReportDto.ProductStats(
                             0,
                             0,
                             0,
                             0,
                             0,
-                            0
+                            0,
+                            BigDecimal.valueOf(0),
+                            BigDecimal.valueOf(0),
+                            BigDecimal.valueOf(0)
                     ));
+
             SummaryReportDto.ProductStats updated = switch (opType) {
                 case ADMISSION -> new SummaryReportDto.ProductStats(
                         prev.admissionsCount() + ops, prev.admissionsTotal() + total,
                         prev.sellsCount(), prev.sellsTotal(),
-                        prev.writeOffsCount(), prev.writeOffsTotal());
+                        prev.writeOffsCount(), prev.writeOffsTotal(),
+                        prev.productSpending().add(operationCost),
+                        prev.productRevenue(), prev.productProfit().subtract(operationCost)); //Так как у операций стоимость поступления - это затраты, то вычитаем всю стоимость закупок из итоговой выручки
                 case SELL -> new SummaryReportDto.ProductStats(
                         prev.admissionsCount(), prev.admissionsTotal(),
                         prev.sellsCount() + ops, prev.sellsTotal() + total,
-                        prev.writeOffsCount(), prev.writeOffsTotal());
+                        prev.writeOffsCount(), prev.writeOffsTotal(),
+                        prev.productSpending(),
+                        prev.productRevenue().add(operationCost),
+                        prev.productProfit().add(operationCost));
                 case WRITE_OFF -> new SummaryReportDto.ProductStats(
                         prev.admissionsCount(), prev.admissionsTotal(),
                         prev.sellsCount(), prev.sellsTotal(),
-                        prev.writeOffsCount() + ops, prev.writeOffsTotal() + total);
+                        prev.writeOffsCount() + ops, prev.writeOffsTotal() + total,
+                        prev.productSpending(),
+                        prev.productRevenue(),
+                        prev.productProfit());
             };
+
+
+
             productStats.put(productName, updated);
 
             switch (opType) {
-                case ADMISSION -> { totalAdmCount  += ops; totalAdmTotal  += total; }
-                case SELL      -> { totalSellCount += ops; totalSellTotal += total; }
+                case ADMISSION -> { totalAdmCount  += ops; totalAdmTotal  += total; spending = spending.add(operationCost);}
+                case SELL      -> { totalSellCount += ops; totalSellTotal += total; revenue = revenue.add(operationCost);}
                 case WRITE_OFF -> { totalWoCount   += ops; totalWoTotal   += total; }
             }
         }
 
+        profit = revenue.subtract(spending);
+
         SummaryReportDto.Stats stats = new SummaryReportDto.Stats(
                 totalAdmCount,  totalAdmTotal,
                 totalSellCount, totalSellTotal,
-                totalWoCount,   totalWoTotal
+                totalWoCount,   totalWoTotal,
+                spending, revenue, profit
         );
 
         List<StorageItemDto> currentStock = storageItemRepo

@@ -22,7 +22,9 @@ public class OperationRequestDto {
     @NotNull @Positive
     private Integer count;
 
-    @NotNull @Positive
+    //Необязательное поле, тк как продажи считаются отдельно,
+    //а проверка при поставках происходит в сервисе
+    @Positive
     private BigDecimal operationCost;
 
     @Size(max = 500)

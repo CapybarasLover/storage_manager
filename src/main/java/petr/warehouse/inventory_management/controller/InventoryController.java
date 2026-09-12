@@ -82,10 +82,10 @@ public class InventoryController {
     }
 
     //Изменить продукт
-    @PatchMapping("/{storageId}/operation")
+    @PostMapping("/{storageId}/operation")
     public ResponseEntity<Void> executeOperation(
             @PathVariable @Positive Long storageId,
-            @Valid @RequestBody OperationRequestDto requestBody
+            @Valid @ParameterObject OperationRequestDto requestBody
     ){
         operationService.executeOperation(storageId, requestBody);
         return ResponseEntity.status(HttpStatus.CREATED).build();

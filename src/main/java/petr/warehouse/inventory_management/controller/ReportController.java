@@ -22,9 +22,8 @@ public class ReportController {
     public ResponseEntity<SummaryReportDto> getReportSummary(
             @RequestParam String storageName,
             @RequestParam LocalDate dateFrom,
-            @RequestParam LocalDate dateTo,
-            @RequestParam BigDecimal spending
-            ){
-        return ResponseEntity.ok(reportService.createNewReport(storageName, dateFrom, dateTo, spending));
+            @RequestParam LocalDate dateTo
+    ){
+        return ResponseEntity.ok(reportService.createNewReport(storageName, dateFrom, dateTo));
     }
 }

@@ -3,13 +3,11 @@ package petr.warehouse.inventory_management.service;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import petr.warehouse.inventory_management.dto.OperationRequestDto;
 import petr.warehouse.inventory_management.dto.StorageDto;
 import petr.warehouse.inventory_management.dto.StorageInfoDto;
-import petr.warehouse.inventory_management.exception.DataExceptions.ProductNotFoundException;
-import petr.warehouse.inventory_management.exception.DataExceptions.StorageNotFoundException;
+import petr.warehouse.inventory_management.exception.dataExceptions.ProductNotFoundException;
+import petr.warehouse.inventory_management.exception.dataExceptions.StorageNotFoundException;
 import petr.warehouse.inventory_management.mapper.StorageMapper;
-import petr.warehouse.inventory_management.model.OperationType;
 import petr.warehouse.inventory_management.repository.StorageItemRepo;
 import petr.warehouse.inventory_management.model.Storage;
 import petr.warehouse.inventory_management.repository.StorageRepo;
@@ -19,7 +17,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 //TODO проверить класс на транзакции, если требуются - добавить @Transactional
 

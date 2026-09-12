@@ -42,7 +42,7 @@ public class OperationService {
 
         switch (requestBody.getOperationType()){
             case ADMISSION -> {
-                if(requestBody.getOperationCost().equals(BigDecimal.ZERO) || requestBody.getOperationCost() == null){
+                if(requestBody.getOperationCost() == null || requestBody.getOperationCost().compareTo(BigDecimal.ZERO) == 0){
                     throw new ZeroOrNullAdmissionCost("Пустое или нулевое значение цены поступления!");
                 }
 
@@ -98,6 +98,6 @@ public class OperationService {
     }
 
     private BigDecimal countOperationCost(int unitsSold, BigDecimal unitCost){
-        return unitCost.multiply(unitCost);
+        return unitCost.multiply(BigDecimal.valueOf(unitsSold));
     }
 }
