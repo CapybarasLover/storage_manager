@@ -1,5 +1,6 @@
 package petr.warehouse.inventory_management.dto;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,13 +20,15 @@ public record SummaryReportDto(
             int admissionsCount, int admissionsTotal,
             int sellsCount,      int sellsTotal,
             int writeOffsCount,  int writeOffsTotal,
-            int spending, int productProfit
+            BigDecimal spending, BigDecimal revenue,
+            BigDecimal profit
     ) {}
 
     public record ProductStats(
             int admissionsCount, int admissionsTotal,
             int sellsCount,      int sellsTotal,
             int writeOffsCount,  int writeOffsTotal,
-            int productSpending, int productProfit
+            BigDecimal productSpending, BigDecimal productRevenue,
+            BigDecimal productProfit
     ) {}
 }

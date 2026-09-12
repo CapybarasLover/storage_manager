@@ -17,10 +17,11 @@ import java.math.BigDecimal;
 })
 @Entity
 public class StorageItem {
-    public StorageItem(String itemName, Storage storage){
+    public StorageItem(String itemName, Storage storage, BigDecimal cost){
         this.itemName = itemName;
         this.storage = storage;
         itemCount = 0;
+        this.cost = cost;
         this.itemStatus = ItemStatus.OUT;
     }
 

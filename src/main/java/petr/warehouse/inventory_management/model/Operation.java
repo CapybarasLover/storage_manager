@@ -13,7 +13,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 public class Operation {
-    public Operation(
+    private Operation(
             String storageName,
             OperationType operationType,
             String productName,
@@ -27,6 +27,64 @@ public class Operation {
         this.amount = amount;
         this.operationDateTime = operationDateTime;
         this.comment = comment;
+    }
+
+    private Operation(
+            String storageName,
+            OperationType operationType,
+            String productName,
+            int amount,
+            Instant operationDateTime,
+            String comment,
+            BigDecimal operationCost
+    ){
+        this.storageName = storageName;
+        this.operationType = operationType;
+        this.productName = productName;
+        this.amount = amount;
+        this.operationDateTime = operationDateTime;
+        this.operationCost = operationCost;
+        this.comment = comment;
+    }
+
+    public static Operation createAdmissionOperation(
+            String storageName,
+            OperationType operationType,
+            String productName,
+            int amount,
+            Instant operationDateTime,
+            String comment,
+            BigDecimal admissionCost
+    ){
+        return new Operation(
+                storageName,
+                operationType,
+                productName,
+                amount,
+                operationDateTime,
+                comment,
+                admissionCost
+        );
+    }
+
+    public static Operation createSellOrWriteOffOperation(
+            String storageName,
+            OperationType operationType,
+            String productName,
+            int amount,
+            Instant operationDateTime,
+            String comment,
+            BigDecimal sellCost
+    ){
+        return new Operation(
+                storageName,
+                operationType,
+                productName,
+                amount,
+                operationDateTime,
+                comment,
+                sellCost
+        );
     }
 
     @Id

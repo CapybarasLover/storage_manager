@@ -15,6 +15,7 @@ import petr.warehouse.inventory_management.model.Storage;
 import petr.warehouse.inventory_management.repository.StorageRepo;
 import petr.warehouse.inventory_management.model.StorageItem;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +57,7 @@ public class StorageManagerService {
         return storage.getId();
     }
 
-    public String addProduct(Long storageId, String itemName) {
+    public String addProduct(Long storageId, String itemName, BigDecimal productCost) {
         Optional<Storage> storageOptional = storageRepo.findById(storageId);
 
         Storage storage = storageOptional.orElseThrow(
@@ -64,7 +65,7 @@ public class StorageManagerService {
                         "404: Не удалось добавить продукт на склад тк такой склад не найден!"
                         , storageId));
 
-        StorageItem newItem = new StorageItem(itemName, storage);
+        StorageItem newItem = new StorageItem(itemName, storage, productCost);
         itemRepo.save(newItem);
 
         return "Item " + itemName + " created!";

@@ -9,7 +9,6 @@ import petr.warehouse.inventory_management.model.OperationType;
 import petr.warehouse.inventory_management.repository.OperationRepo;
 import petr.warehouse.inventory_management.repository.StorageItemRepo;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -23,7 +22,7 @@ public class ReportService {
     @Autowired OperationRepo operationRepo;
     @Autowired StorageItemRepo storageItemRepo;
 
-    public SummaryReportDto createNewReport(String storageName, LocalDate dateFrom, LocalDate dateTo, BigDecimal spending) {
+    public SummaryReportDto createNewReport(String storageName, LocalDate dateFrom, LocalDate dateTo) {
         ZoneId zone = ZoneId.of("Europe/Moscow");
         Instant from = dateFrom.atStartOfDay(zone).toInstant();
         Instant to = dateTo.plusDays(1).atStartOfDay(zone).toInstant();
@@ -52,7 +51,14 @@ public class ReportService {
             int total = ((Long) cols[3]).intValue();
 
             SummaryReportDto.ProductStats prev = productStats.getOrDefault(
-                    productName, new SummaryReportDto.ProductStats(0, 0, 0, 0, 0, 0));
+                    productName, new SummaryReportDto.ProductStats(
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0
+                    ));
             SummaryReportDto.ProductStats updated = switch (opType) {
                 case ADMISSION -> new SummaryReportDto.ProductStats(
                         prev.admissionsCount() + ops, prev.admissionsTotal() + total,

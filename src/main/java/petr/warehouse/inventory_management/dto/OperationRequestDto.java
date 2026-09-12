@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import petr.warehouse.inventory_management.model.OperationType;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 public class OperationRequestDto {
@@ -19,6 +21,9 @@ public class OperationRequestDto {
 
     @NotNull @Positive
     private Integer count;
+
+    @NotNull @Positive
+    private BigDecimal operationCost;
 
     @Size(max = 500)
     private String comment;

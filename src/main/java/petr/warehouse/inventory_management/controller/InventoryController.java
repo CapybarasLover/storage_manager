@@ -22,6 +22,7 @@ import petr.warehouse.inventory_management.service.OperationService;
 import petr.warehouse.inventory_management.service.StorageManagerService;
 import petr.warehouse.inventory_management.dto.StorageDto;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
@@ -42,13 +43,17 @@ public class InventoryController {
 
     //Получить данные склада по id
     @GetMapping("/{storageId}")
-    public ResponseEntity<StorageDto> getStorage(@PathVariable @Positive Long storageId){
+    public ResponseEntity<StorageDto> getStorage(
+            @PathVariable @Positive Long storageId
+    ){
         return ResponseEntity.ok(storageService.getStorageById(storageId));
     }
 
     //Добавить склад
     @PostMapping
-    public ResponseEntity<Void> postNewStorage(@RequestParam @NotBlank @Size(max = 25) String name){
+    public ResponseEntity<Void> postNewStorage(
+            @RequestParam @NotBlank @Size(max = 25) String name
+    ){
         Long storageId = storageService.createStorage(name);
         URI location = URI.create("/storage/" + storageId);
         return ResponseEntity.created(location).build();
@@ -56,15 +61,22 @@ public class InventoryController {
 
     //Добавить новый продукт
     @PostMapping("/{storageId}/products")
-    public ResponseEntity<Void> postNewProduct(@PathVariable @Positive Long storageId, @NotBlank @Size(max = 100) @RequestParam String productName){
-        storageService.addProduct(storageId, productName);
+    public ResponseEntity<Void> postNewProduct(
+            @PathVariable @Positive Long storageId,
+            @NotBlank @Size(max = 100) @RequestParam String productName,
+            @RequestParam @Positive BigDecimal productCost
+    ){
+        storageService.addProduct(storageId, productName, productCost);
         URI location = URI.create("/storage/" + storageId + "/products/" + productName);
         return ResponseEntity.created(location).build();
     }
 
     //Удалить продукт
     @DeleteMapping("/{storageId}/products/{productId}")
-    public ResponseEntity<?> deleteProduct(@PathVariable @Positive Long storageId, @PathVariable @Positive Long productId){
+    public ResponseEntity<?> deleteProduct(
+            @PathVariable @Positive Long storageId,
+            @PathVariable @Positive Long productId
+    ){
         storageService.deleteProduct(storageId, productId);
         return ResponseEntity.noContent().build();
     }
@@ -83,7 +95,7 @@ public class InventoryController {
     public Page<OperationDto> getOperations(
             @ParameterObject @Valid OperationFilter filter,
             @ParameterObject @PageableDefault(size = 20, sort = "operationDateTime", direction = Sort.Direction.DESC) Pageable pageable
-            ) {
+    ) {
         return operationService.getOperations(
                 filter,
                 pageable

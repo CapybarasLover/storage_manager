@@ -18,6 +18,7 @@ import petr.warehouse.inventory_management.model.Operation;
 import petr.warehouse.inventory_management.model.StorageItem;
 import petr.warehouse.inventory_management.repository.specification.OperationSpecifications;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 //Класс для работы с операциями
@@ -42,6 +43,17 @@ public class OperationService {
             case ADMISSION -> {
                 item.addCount(requestBody.getCount());
                 itemRepo.save(item);
+                Operation admissionOperation = Operation.createAdmissionOperation(
+                        item.getStorage().getName(),
+                        requestBody.getOperationType(),
+                        requestBody.getProductName(),
+                        requestBody.getCount(),
+                        Instant.now(),
+                        requestBody.getComment(),
+                        requestBody.getOperationCost()
+                );
+
+                opRepo.save(admissionOperation);
             }
             case SELL, WRITE_OFF -> {
                 if(requestBody.getCount() > item.getItemCount()){
@@ -54,18 +66,20 @@ public class OperationService {
 
                 item.minusCount(requestBody.getCount());
                 itemRepo.save(item);
+
+                Operation sellOrWriteOffOperation = Operation.createSellOrWriteOffOperation(
+                        item.getStorage().getName(),
+                        requestBody.getOperationType(),
+                        requestBody.getProductName(),
+                        requestBody.getCount(),
+                        Instant.now(),
+                        requestBody.getComment(),
+                        countOperationCost(requestBody.getCount(), item.getCost())
+                );
+
+                opRepo.save(sellOrWriteOffOperation);
             }
         }
-
-        Operation operation = new Operation(item.getStorage().getName(),
-                requestBody.getOperationType(),
-                requestBody.getProductName(),
-                requestBody.getCount(),
-                Instant.now(),
-                requestBody.getComment()
-        );
-
-        opRepo.save(operation);
     }
 
     public Page<OperationDto> getOperations(OperationFilter filter, Pageable pageable){
@@ -76,5 +90,9 @@ public class OperationService {
                 .and(OperationSpecifications.inDateRange(filter.getDateFrom(), filter.getDateTo()));
 
         return opRepo.findAll(specification, pageable).map(operation -> operationMapper.toDto(operation));
+    }
+
+    private BigDecimal countOperationCost(int unitsSold, BigDecimal unitCost){
+        return unitCost.multiply(unitCost);
     }
 }
