@@ -10,6 +10,7 @@ import petr.warehouse.inventory_management.dto.OperationDto;
 import petr.warehouse.inventory_management.dto.OperationRequestDto;
 import petr.warehouse.inventory_management.exception.dataExceptions.IllegalSellOrWriteOffCount;
 import petr.warehouse.inventory_management.exception.dataExceptions.ProductNotFoundException;
+import petr.warehouse.inventory_management.exception.requestException.ZeroOrNullAdmissionCost;
 import petr.warehouse.inventory_management.filter.OperationFilter;
 import petr.warehouse.inventory_management.mapper.OperationMapper;
 import petr.warehouse.inventory_management.repository.OperationRepo;
@@ -42,7 +43,7 @@ public class OperationService {
         switch (requestBody.getOperationType()){
             case ADMISSION -> {
                 if(requestBody.getOperationCost().equals(BigDecimal.ZERO) || requestBody.getOperationCost() == null){
-                    throw new
+                    throw new ZeroOrNullAdmissionCost("Пустое или нулевое значение цены поступления!");
                 }
 
                 item.addCount(requestBody.getCount());
