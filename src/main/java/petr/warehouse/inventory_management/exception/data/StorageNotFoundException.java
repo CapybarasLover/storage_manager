@@ -1,4 +1,4 @@
-package petr.warehouse.inventory_management.exception.dataExceptions;
+package petr.warehouse.inventory_management.exception.data;
 
 public class StorageNotFoundException extends RuntimeException {
     public StorageNotFoundException(String message, Long id) {

@@ -1,12 +1,14 @@
 package petr.warehouse.inventory_management.service;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import petr.warehouse.inventory_management.dto.StorageDto;
 import petr.warehouse.inventory_management.dto.StorageInfoDto;
-import petr.warehouse.inventory_management.exception.dataExceptions.ProductNotFoundException;
-import petr.warehouse.inventory_management.exception.dataExceptions.StorageNotFoundException;
+import petr.warehouse.inventory_management.exception.data.ProductAlreadyExistsException;
+import petr.warehouse.inventory_management.exception.data.ProductNotFoundException;
+import petr.warehouse.inventory_management.exception.data.StorageNotFoundException;
 import petr.warehouse.inventory_management.mapper.StorageMapper;
 import petr.warehouse.inventory_management.repository.StorageItemRepo;
 import petr.warehouse.inventory_management.model.Storage;
@@ -59,11 +61,16 @@ public class StorageManagerService {
 
         Storage storage = storageOptional.orElseThrow(
                 () -> new StorageNotFoundException(
-                        "404: Не удалось добавить продукт на склад тк такой склад не найден!"
+                        "404: Не удалось добавить продукт на склад так как такой склад не найден!"
                         , storageId));
 
         StorageItem newItem = new StorageItem(itemName, storage, productCost);
-        itemRepo.save(newItem);
+        try {
+            itemRepo.save(newItem);
+        } catch (DataIntegrityViolationException e){
+            throw new ProductAlreadyExistsException(e.getMessage(), newItem.getId());
+        }
+
 
         return "Item " + itemName + " created!";
     }

@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import petr.warehouse.inventory_management.exception.dataExceptions.IllegalSellOrWriteOffCount;
-import petr.warehouse.inventory_management.exception.dataExceptions.ProductNotFoundException;
-import petr.warehouse.inventory_management.exception.dataExceptions.StorageNotFoundException;
-import petr.warehouse.inventory_management.exception.requestException.ZeroOrNullAdmissionCost;
+import petr.warehouse.inventory_management.exception.data.IllegalSellOrWriteOffCount;
+import petr.warehouse.inventory_management.exception.data.ProductAlreadyExistsException;
+import petr.warehouse.inventory_management.exception.data.ProductNotFoundException;
+import petr.warehouse.inventory_management.exception.data.StorageNotFoundException;
+import petr.warehouse.inventory_management.exception.request.ZeroOrNullAdmissionCost;
 
 import java.util.Map;
 
@@ -29,6 +30,15 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.NOT_FOUND,
                 "Товар не найден");
+        System.out.println(webRequest);
+        return problemDetail;
+    }
+
+    @ExceptionHandler
+    public ProblemDetail handleProductAlreadyExistsException(ProductAlreadyExistsException e, WebRequest webRequest){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                "Товар с таким именем уже есть на складе!");
         System.out.println(webRequest);
         return problemDetail;
     }

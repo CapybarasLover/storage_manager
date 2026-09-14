@@ -1,4 +1,4 @@
-package petr.warehouse.inventory_management.exception.dataExceptions;
+package petr.warehouse.inventory_management.exception.data;
 
 public class IllegalSellOrWriteOffCount extends RuntimeException {
     public IllegalSellOrWriteOffCount(String message, String itemName, int operationCount) {
