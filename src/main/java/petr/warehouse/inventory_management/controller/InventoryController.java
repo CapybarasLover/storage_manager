@@ -105,7 +105,7 @@ public class InventoryController {
         );
     }
 
-    @PutMapping("/operations/{operationId}")
+    @DeleteMapping("/operations/{operationId}")
     public ResponseEntity<Void> cancelOperation(
             @PathVariable @Positive Long operationId
     ) {

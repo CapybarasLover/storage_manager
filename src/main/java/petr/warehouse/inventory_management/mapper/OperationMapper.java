@@ -17,6 +17,8 @@ public class OperationMapper {
         dto.setOperationDateTime(operation.getOperationDateTime());
         dto.setOperationCost(operation.getOperationCost());
         dto.setComment(operation.getComment());
+        dto.setCancelsOperationId(operation.getCancelsOperationId());
+        dto.setIsCanceled(operation.getIsCanceled());
 
         return dto;
     }

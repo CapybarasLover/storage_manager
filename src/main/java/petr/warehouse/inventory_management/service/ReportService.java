@@ -101,7 +101,8 @@ public class ReportService {
                         prev.productSpending(),
                         prev.productRevenue(),
                         prev.productProfit());
-                case CANCELLATION -> null;
+                case CANCELLATION -> throw new IllegalStateException(
+                        "CANCELLATION не должна попасть в отчёт — проверь SQL-фильтр");
             };
 
 

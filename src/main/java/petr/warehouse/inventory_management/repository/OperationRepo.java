@@ -15,7 +15,7 @@ public interface OperationRepo extends JpaRepository<Operation, Long>, JpaSpecif
             "COUNT(o) as ops, SUM(o.amount) as total, SUM(o.operationCost) as totalOperationCost " +
             "FROM Operation o " +
             "WHERE o.storageName = :storageName " +
-            "AND o.operationType != CANCELLATION AND o.isCancelled = true " +
+            "AND o.operationType != 'CANCELATION' AND o.isCanceled = false " +
             "AND o.operationDateTime BETWEEN :from AND :to " +
             "GROUP BY o.productName, o.operationType")
     List<Object> groupOperationsForReport(String storageName, Instant from, Instant to);

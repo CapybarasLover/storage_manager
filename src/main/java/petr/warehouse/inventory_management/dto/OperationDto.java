@@ -18,4 +18,6 @@ public class OperationDto {
     private Instant operationDateTime;
     private BigDecimal operationCost;
     private String comment;
+    private Boolean isCanceled;
+    private Long cancelsOperationId;
 }
