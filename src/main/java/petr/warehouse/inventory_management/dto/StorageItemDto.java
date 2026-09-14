@@ -7,6 +7,7 @@ import petr.warehouse.inventory_management.model.ItemStatus;
 @Getter
 @Setter
 public class StorageItemDto {
+    private Long id;
     private String name;
     private int count;
     private ItemStatus status;
