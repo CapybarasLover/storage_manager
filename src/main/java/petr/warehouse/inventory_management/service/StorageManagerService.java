@@ -14,21 +14,26 @@ import petr.warehouse.inventory_management.repository.StorageRepo;
 import petr.warehouse.inventory_management.model.StorageItem;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
 public class StorageManagerService {
-    @Autowired
-    StorageRepo storageRepo;
+    private final StorageRepo storageRepo;
+    private final StorageItemRepo itemRepo;
+    private final StorageMapper storageMapper;
 
     @Autowired
-    StorageItemRepo itemRepo;
-
-    @Autowired
-    StorageMapper storageMapper;
+    public StorageManagerService(
+            StorageRepo storageRepo,
+            StorageItemRepo itemRepo,
+            StorageMapper storageMapper
+    ){
+        this.storageRepo = storageRepo;
+        this.itemRepo = itemRepo;
+        this.storageMapper = storageMapper;
+    }
 
     public StorageDto getStorageById(Long storageId){
         Optional<Storage> storageOptional = storageRepo.findById(storageId);

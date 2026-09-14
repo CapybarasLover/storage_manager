@@ -19,10 +19,20 @@ import java.util.Map;
 
 @Service
 public class ReportService {
+    private final StorageItemMapper storageItemMapper;
+    private final OperationRepo operationRepo;
+    private final StorageItemRepo storageItemRepo;
 
-    @Autowired StorageItemMapper storageItemMapper;
-    @Autowired OperationRepo operationRepo;
-    @Autowired StorageItemRepo storageItemRepo;
+    @Autowired
+    public ReportService(
+            StorageItemMapper storageItemMapper,
+            OperationRepo operationRepo,
+            StorageItemRepo storageItemRepo
+    ) {
+        this.storageItemMapper = storageItemMapper;
+        this.operationRepo = operationRepo;
+        this.storageItemRepo = storageItemRepo;
+    }
 
     public SummaryReportDto createNewReport(String storageName, LocalDate dateFrom, LocalDate dateTo) {
         ZoneId zone = ZoneId.of("Europe/Moscow");

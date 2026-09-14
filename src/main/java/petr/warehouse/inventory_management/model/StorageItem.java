@@ -16,14 +16,6 @@ import java.math.BigDecimal;
 })
 @Entity
 public class StorageItem {
-    public StorageItem(String itemName, Storage storage, BigDecimal cost){
-        this.itemName = itemName;
-        this.storage = storage;
-        itemCount = 0;
-        this.cost = cost;
-        this.itemStatus = ItemStatus.OUT;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,6 +36,14 @@ public class StorageItem {
 
     @Column(name = "cost")
     private BigDecimal cost;
+
+    public StorageItem(String itemName, Storage storage, BigDecimal cost){
+        this.itemName = itemName;
+        this.storage = storage;
+        itemCount = 0;
+        this.cost = cost;
+        this.itemStatus = ItemStatus.OUT;
+    }
 
     public void addCount(Integer itemCount){
         this.itemCount += itemCount;

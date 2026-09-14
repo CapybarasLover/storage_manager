@@ -15,8 +15,12 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/report")
 public class ReportController {
+    private final ReportService reportService;
+
     @Autowired
-    ReportService reportService;
+    public ReportController(ReportService reportService){
+        this.reportService = reportService;
+    }
 
     @GetMapping("/summary")
     public ResponseEntity<SummaryReportDto> getReportSummary(

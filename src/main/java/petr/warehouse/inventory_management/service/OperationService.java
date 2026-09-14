@@ -26,14 +26,16 @@ import java.time.Instant;
 @Service
 @Transactional
 public class OperationService {
-    @Autowired
-    OperationRepo opRepo;
+    private final OperationRepo opRepo;
+    private final StorageItemRepo itemRepo;
+    private final OperationMapper operationMapper;
 
     @Autowired
-    StorageItemRepo itemRepo;
-
-    @Autowired
-    OperationMapper operationMapper;
+    public OperationService(OperationRepo opRepo, StorageItemRepo itemRepo, OperationMapper operationMapper){
+        this.opRepo = opRepo;
+        this.itemRepo = itemRepo;
+        this.operationMapper = operationMapper;
+    }
 
     public void executeOperation(Long storageId, OperationRequestDto requestBody){
         StorageItem item = itemRepo.findByItemNameAndStorageId(requestBody.getProductName(), storageId)

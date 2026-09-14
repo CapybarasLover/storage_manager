@@ -13,8 +13,12 @@ import java.util.List;
 
 @Component
 public class StorageMapper {
+    private final StorageItemMapper storageItemMapper;
+
     @Autowired
-    StorageItemMapper storageItemMapper;
+    StorageMapper(StorageItemMapper storageItemMapper){
+        this.storageItemMapper = storageItemMapper;
+    }
 
     public StorageDto toDto(Storage storage){
         if(storage == null){

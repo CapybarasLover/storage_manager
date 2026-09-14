@@ -30,11 +30,14 @@ import java.util.List;
 @Validated
 @RequestMapping("storage")
 public class InventoryController {
-    @Autowired
-    StorageManagerService storageService;
+    private final StorageManagerService storageService;
+    private final OperationService operationService;
 
     @Autowired
-    OperationService operationService;
+    public InventoryController(StorageManagerService storageService, OperationService operationService){
+        this.storageService = storageService;
+        this.operationService = operationService;
+    }
 
     @GetMapping
     ResponseEntity<List<StorageInfoDto>> getAllStorages(){
