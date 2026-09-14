@@ -1,5 +1,6 @@
 package petr.warehouse.inventory_management.mapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import petr.warehouse.inventory_management.dto.StorageDto;
 import petr.warehouse.inventory_management.dto.StorageInfoDto;
@@ -12,6 +13,9 @@ import java.util.List;
 
 @Component
 public class StorageMapper {
+    @Autowired
+    StorageItemMapper storageItemMapper;
+
     public StorageDto toDto(Storage storage){
         if(storage == null){
             return null;
@@ -25,7 +29,7 @@ public class StorageMapper {
         List<StorageItem> storageItemList = storage.getItems();
 
         for(var item : storageItemList){
-            itemListDto.add(StorageItemMapper.toDto(item));
+            itemListDto.add(storageItemMapper.toDto(item));
         }
         dto.setStorageItemListDto(itemListDto);
 
@@ -46,7 +50,7 @@ public class StorageMapper {
         List<StorageItem> storageItemList = new ArrayList<>();
 
         for(var dtoItem : itemListDto){
-            storageItemList.add(StorageItemMapper.toStorageItem(dtoItem));
+            storageItemList.add(storageItemMapper.toStorageItem(dtoItem));
         }
 
         storage.setItems(storageItemList);

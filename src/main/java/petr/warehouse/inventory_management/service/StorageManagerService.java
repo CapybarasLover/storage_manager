@@ -1,6 +1,6 @@
 package petr.warehouse.inventory_management.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import petr.warehouse.inventory_management.dto.StorageDto;
@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-//TODO проверить класс на транзакции, если требуются - добавить @Transactional
-
 @Service
 @Transactional
 public class StorageManagerService {
@@ -31,9 +29,6 @@ public class StorageManagerService {
 
     @Autowired
     StorageMapper storageMapper;
-
-    @Autowired
-    OperationService operationService;
 
     public StorageDto getStorageById(Long storageId){
         Optional<Storage> storageOptional = storageRepo.findById(storageId);
@@ -79,15 +74,11 @@ public class StorageManagerService {
     }
 
     public List<StorageInfoDto> getAllStorages() {
-        List<StorageInfoDto> storageInfoDtos = new ArrayList<>();
+        List<StorageInfoDto> storageInfoDtos;
         List<Storage> storageList = storageRepo.findAll();
 
-        if(storageList.isEmpty()){
-            return storageInfoDtos;
-        }
-
         storageInfoDtos = storageList.stream().map(
-                storge -> storageMapper.toInfoDto(storge)
+                storage -> storageMapper.toInfoDto(storage)
         ).toList();
 
         return storageInfoDtos;

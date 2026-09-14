@@ -20,6 +20,7 @@ import java.util.Map;
 @Service
 public class ReportService {
 
+    @Autowired StorageItemMapper storageItemMapper;
     @Autowired OperationRepo operationRepo;
     @Autowired StorageItemRepo storageItemRepo;
 
@@ -52,7 +53,7 @@ public class ReportService {
             OperationType opType = (OperationType) cols[1];
             int ops = ((Long) cols[2]).intValue();
             int total = ((Long) cols[3]).intValue();
-            BigDecimal operationCost = (BigDecimal) cols[4];
+            BigDecimal operationCost = cols[4] != null ? (BigDecimal) cols[4] : BigDecimal.ZERO;
 
 
             SummaryReportDto.ProductStats prev = productStats.getOrDefault(
@@ -105,7 +106,7 @@ public class ReportService {
 
         profit = revenue.subtract(spending);
 
-        SummaryReportDto.Stats stats = new SummaryReportDto.Stats(
+        SummaryReportDto.StorageStats storageStats = new SummaryReportDto.StorageStats(
                 totalAdmCount,  totalAdmTotal,
                 totalSellCount, totalSellTotal,
                 totalWoCount,   totalWoTotal,
@@ -115,9 +116,9 @@ public class ReportService {
         List<StorageItemDto> currentStock = storageItemRepo
                 .findAllByStorage_Name(storageName)
                 .stream()
-                .map(StorageItemMapper::toDto)
+                .map(storageItemMapper::toDto)
                 .toList();
 
-        return new SummaryReportDto(storageName, dateFrom, dateTo, Instant.now(), currentStock, stats, productStats);
+        return new SummaryReportDto(storageName, dateFrom, dateTo, Instant.now(), currentStock, storageStats, productStats);
     }
 }

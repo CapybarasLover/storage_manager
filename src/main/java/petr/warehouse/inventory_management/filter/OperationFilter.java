@@ -23,7 +23,7 @@ public class OperationFilter{
     @PastOrPresent
     LocalDate dateTo;
 
-    @AssertTrue(message = "dateFrom must be <= dateTo")
+    @AssertTrue(message = "Дата начала должна быть меньше даты конца.")
     public boolean isDateRangeValid() {
         return dateFrom == null || dateTo == null || !dateFrom.isAfter(dateTo);
     }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import petr.warehouse.inventory_management.model.OperationType;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
@@ -14,5 +15,6 @@ public class OperationDto {
     private String productName;
     private Integer amount;
     private Instant operationDateTime;
+    private BigDecimal operationCost;
     private String comment;
 }

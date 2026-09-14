@@ -14,6 +14,7 @@ public class OperationMapper {
         dto.setOperationType(operation.getOperationType());
         dto.setAmount(operation.getAmount());
         dto.setOperationDateTime(operation.getOperationDateTime());
+        dto.setOperationCost(operation.getOperationCost());
         dto.setComment(operation.getComment());
 
         return dto;

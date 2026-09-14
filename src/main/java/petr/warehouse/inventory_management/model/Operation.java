@@ -13,21 +13,33 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 public class Operation {
-    private Operation(
-            String storageName,
-            OperationType operationType,
-            String productName,
-            int amount,
-            Instant operationDateTime,
-            String comment
-    ){
-        this.storageName = storageName;
-        this.operationType = operationType;
-        this.productName = productName;
-        this.amount = amount;
-        this.operationDateTime = operationDateTime;
-        this.comment = comment;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "storage_name")
+    private String storageName;
+
+    @Column(name = "operation_type")
+    @Enumerated(value = EnumType.STRING)
+    private OperationType operationType;
+
+    @Column(name = "product_name")
+    private String productName;
+
+    @Column(name = "amount")
+    private int amount;
+
+    @Column(name = "operation_date_time", columnDefinition = "timestamptz")
+    private Instant operationDateTime;
+
+    //Если это поступление - то стоимость операции это стоимость ВСЕГО поступления,
+    //Если это продажа - стоимость ВСЕЙ продажи
+    @Column(name = "operation_cost")
+    private BigDecimal operationCost;
+
+    @Column(name = "comment")
+    private String comment;
 
     private Operation(
             String storageName,
@@ -86,32 +98,4 @@ public class Operation {
                 sellCost
         );
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "storage_name")
-    private String storageName;
-
-    @Column(name = "operation_type")
-    @Enumerated(value = EnumType.STRING)
-    private OperationType operationType;
-
-    @Column(name = "product_name")
-    private String productName;
-
-    @Column(name = "amount")
-    private int amount;
-
-    @Column(name = "operation_date_time", columnDefinition = "timestamptz")
-    private Instant operationDateTime;
-
-    //Если это поступление - то стоимость операции это стоимость ВСЕГО поступления,
-    //Если это продажа - стоимость ВСЕЙ продажи
-    @Column(name = "operation_cost")
-    private BigDecimal operationCost;
-
-    @Column(name = "comment")
-    private String comment;
 }

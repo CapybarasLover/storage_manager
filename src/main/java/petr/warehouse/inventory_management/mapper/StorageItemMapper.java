@@ -6,7 +6,7 @@ import petr.warehouse.inventory_management.model.StorageItem;
 
 @Component
 public class StorageItemMapper {
-    static public StorageItem toStorageItem(StorageItemDto dto){
+    public StorageItem toStorageItem(StorageItemDto dto){
         if(dto == null){
             return null;
         }
@@ -19,7 +19,7 @@ public class StorageItemMapper {
         return storageItem;
     }
 
-    static public StorageItemDto toDto(StorageItem storageItem){
+    public StorageItemDto toDto(StorageItem storageItem){
         if(storageItem == null){
             return null;
         }

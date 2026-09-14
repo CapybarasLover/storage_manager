@@ -27,6 +27,6 @@ public class OperationRequestDto {
     @Positive
     private BigDecimal operationCost;
 
-    @Size(max = 500)
+    @Size(max = 255)
     private String comment;
 }
