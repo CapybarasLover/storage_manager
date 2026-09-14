@@ -1,5 +1,6 @@
 package petr.warehouse.inventory_management.service;
 
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -101,5 +102,9 @@ public class OperationService {
 
     private BigDecimal countOperationCost(int unitsSold, BigDecimal unitCost){
         return unitCost.multiply(BigDecimal.valueOf(unitsSold));
+    }
+
+    public void cancelOperation(@Positive Long operationId) {
+
     }
 }

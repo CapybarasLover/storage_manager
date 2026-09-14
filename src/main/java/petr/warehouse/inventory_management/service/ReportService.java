@@ -101,6 +101,7 @@ public class ReportService {
                         prev.productSpending(),
                         prev.productRevenue(),
                         prev.productProfit());
+                case CANCELLATION -> null;
             };
 
 

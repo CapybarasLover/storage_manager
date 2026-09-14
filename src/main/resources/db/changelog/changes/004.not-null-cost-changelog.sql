@@ -1,3 +1,5 @@
+-- liquibase formatted sql
+
 -- changest Petra:1787037025929-7
 
 ALTER TABLE item ALTER COLUMN cost SET NOT NULL;

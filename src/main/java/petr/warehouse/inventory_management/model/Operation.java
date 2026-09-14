@@ -38,6 +38,12 @@ public class Operation {
     @Column(name = "operation_cost")
     private BigDecimal operationCost;
 
+    @Column(name = "is_cancelled")
+    private Boolean isCancelled;
+
+    @Column(name = "cancels_operation_id")
+    private Long cancelsOperationId;
+
     @Column(name = "comment")
     private String comment;
 
@@ -57,6 +63,8 @@ public class Operation {
         this.operationDateTime = operationDateTime;
         this.operationCost = operationCost;
         this.comment = comment;
+        this.isCancelled = false;
+        this.cancelsOperationId = null;
     }
 
     public static Operation createAdmissionOperation(

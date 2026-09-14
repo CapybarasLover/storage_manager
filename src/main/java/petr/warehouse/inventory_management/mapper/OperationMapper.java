@@ -9,6 +9,7 @@ public class OperationMapper {
     public OperationDto toDto(Operation operation){
         OperationDto dto = new OperationDto();
 
+        dto.setId(operation.getId());
         dto.setStorageName(operation.getStorageName());
         dto.setProductName(operation.getProductName());
         dto.setOperationType(operation.getOperationType());
