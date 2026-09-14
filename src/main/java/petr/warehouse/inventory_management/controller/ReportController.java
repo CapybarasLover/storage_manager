@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import petr.warehouse.inventory_management.dto.SummaryReportDto;
 import petr.warehouse.inventory_management.service.ReportService;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @RestController
