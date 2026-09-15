@@ -44,7 +44,7 @@ public class ReportPdfClient {
                 .build();
     }
 
-    public byte[] render(SummaryReportDto summary) {
+    public byte[] render(SummaryReportDto summary, String theme) {
         //Сериализуем тем же маппером, что и остальные ответы приложения,
         //иначе даты уехали бы в другой формат, чем ждёт python.
         String payload;
@@ -57,7 +57,7 @@ public class ReportPdfClient {
         byte[] pdf;
         try {
             pdf = restClient.post()
-                    .uri("/render")
+                    .uri(uriBuilder -> uriBuilder.path("/render").queryParam("theme", theme).build())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_PDF)
                     .body(payload)

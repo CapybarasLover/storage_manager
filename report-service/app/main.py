@@ -13,6 +13,7 @@ from fastapi.responses import JSONResponse, Response
 
 from .models import SummaryReport
 from .render import FONT, render_report
+from .theme import PALETTES, Theme
 
 logger = logging.getLogger("report-service")
 
@@ -32,21 +33,22 @@ async def on_validation_error(request: Request, exc: RequestValidationError) -> 
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "font": FONT}
+    return {"status": "ok", "font": FONT, "themes": sorted(PALETTES)}
 
 
 @app.post(
     "/render",
     responses={200: {"content": {"application/pdf": {}}, "description": "PDF-отчёт"}},
 )
-def render(report: SummaryReport) -> Response:
-    pdf = render_report(report)
+def render(report: SummaryReport, theme: Theme = "light") -> Response:
+    pdf = render_report(report, theme)
     logger.info(
-        "Отчёт «%s» за %s—%s: %d позиций, %d байт",
+        "Отчёт «%s» за %s—%s: %d позиций, тема %s, %d байт",
         report.storageName,
         report.dateFrom,
         report.dateTo,
         len(report.productStats),
+        theme,
         len(pdf),
     )
     return Response(content=pdf, media_type="application/pdf")

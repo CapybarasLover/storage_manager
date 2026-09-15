@@ -55,7 +55,13 @@ export function ReportTab() {
     try {
       await apiDownload(
         '/report/pdf',
-        { storageName: storage.name, dateFrom, dateTo },
+        {
+          storageName: storage.name,
+          dateFrom,
+          dateTo,
+          // Печатаем в той же теме, в которой пользователь сейчас смотрит интерфейс.
+          theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+        },
         `report-${storage.name}-${dateFrom}-${dateTo}.pdf`,
       )
     } catch (cause) {

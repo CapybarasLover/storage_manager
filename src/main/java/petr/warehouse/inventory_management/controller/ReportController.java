@@ -42,10 +42,12 @@ public class ReportController {
     public ResponseEntity<byte[]> getReportPdf(
             @RequestParam String storageName,
             @RequestParam LocalDate dateFrom,
-            @RequestParam LocalDate dateTo
+            @RequestParam LocalDate dateTo,
+            //Отчёт печатается в той же теме, в которой пользователь смотрит интерфейс.
+            @RequestParam(defaultValue = "light") String theme
     ){
         SummaryReportDto summary = reportService.createNewReport(storageName, dateFrom, dateTo);
-        byte[] pdf = reportPdfClient.render(summary);
+        byte[] pdf = reportPdfClient.render(summary, "dark".equalsIgnoreCase(theme) ? "dark" : "light");
 
         //Имя склада кириллическое, поэтому filename* в кодировке UTF-8.
         ContentDisposition disposition = ContentDisposition.attachment()
