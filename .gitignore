@@ -37,3 +37,9 @@ build/
 /project_architecture_full.txt
 /ROADMAP_V1.md
 /script.sql
+
+### Frontend ###
+/frontend/node_modules/
+/frontend/dist/
+# Сюда складывается собранный UI (npm run build), в репозитории не нужен
+/src/main/resources/static/

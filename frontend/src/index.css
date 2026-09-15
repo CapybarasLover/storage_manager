@@ -1,0 +1,153 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.65rem;
+
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+
+  /* Светофор остатков и типы операций. Держим тут, чтобы бейджи,
+     плитки и таблицы говорили одним цветом об одном и том же. */
+  --status-out: oklch(0.577 0.245 27.325);
+  --status-out-bg: oklch(0.955 0.035 25);
+  --status-few: oklch(0.648 0.17 70);
+  --status-few-bg: oklch(0.96 0.045 85);
+  --status-enough: oklch(0.6 0.13 155);
+  --status-enough-bg: oklch(0.955 0.04 155);
+
+  --op-admission: oklch(0.55 0.16 255);
+  --op-admission-bg: oklch(0.955 0.03 255);
+  --op-sell: oklch(0.55 0.18 305);
+  --op-sell-bg: oklch(0.96 0.03 305);
+  --op-writeoff: oklch(0.577 0.245 27.325);
+  --op-writeoff-bg: oklch(0.955 0.035 25);
+
+  --positive: oklch(0.55 0.14 155);
+  --negative: oklch(0.577 0.245 27.325);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+
+  --status-out: oklch(0.75 0.16 25);
+  --status-out-bg: oklch(0.3 0.07 25);
+  --status-few: oklch(0.82 0.15 80);
+  --status-few-bg: oklch(0.32 0.06 75);
+  --status-enough: oklch(0.78 0.14 155);
+  --status-enough-bg: oklch(0.29 0.06 155);
+
+  --op-admission: oklch(0.78 0.12 255);
+  --op-admission-bg: oklch(0.3 0.07 255);
+  --op-sell: oklch(0.79 0.13 305);
+  --op-sell-bg: oklch(0.31 0.07 305);
+  --op-writeoff: oklch(0.75 0.16 25);
+  --op-writeoff-bg: oklch(0.3 0.07 25);
+
+  --positive: oklch(0.78 0.14 155);
+  --negative: oklch(0.75 0.16 25);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-status-out: var(--status-out);
+  --color-status-out-bg: var(--status-out-bg);
+  --color-status-few: var(--status-few);
+  --color-status-few-bg: var(--status-few-bg);
+  --color-status-enough: var(--status-enough);
+  --color-status-enough-bg: var(--status-enough-bg);
+
+  --color-op-admission: var(--op-admission);
+  --color-op-admission-bg: var(--op-admission-bg);
+  --color-op-sell: var(--op-sell);
+  --color-op-sell-bg: var(--op-sell-bg);
+  --color-op-writeoff: var(--op-writeoff);
+  --color-op-writeoff-bg: var(--op-writeoff-bg);
+
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Числа в таблицах должны выстраиваться в колонку по разрядам. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
