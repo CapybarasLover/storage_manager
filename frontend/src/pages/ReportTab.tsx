@@ -11,7 +11,8 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useReport } from '@/hooks/useReport'
-import { apiDownload, triggerDownload } from '@/lib/api'
+import { toast } from 'sonner'
+import { ApiError, apiDownload, triggerDownload } from '@/lib/api'
 import { RANGE_PRESETS, validateRange } from '@/lib/dates'
 import { showApiError } from '@/lib/errors'
 import { formatDateTime, formatMoney, formatNumber, pieces } from '@/lib/format'
@@ -58,7 +59,15 @@ export function ReportTab() {
         `report-${storage.name}-${dateFrom}-${dateTo}.pdf`,
       )
     } catch (cause) {
-      showApiError(cause, 'Не удалось получить PDF')
+      // Java-прокси к Python-рендереру ещё не подключён: 404 от Spring
+      // приходит с техническим текстом, который пользователю ничего не говорит.
+      if (cause instanceof ApiError && cause.status === 404) {
+        toast.error('Выгрузка PDF недоступна', {
+          description: 'Сервис формирования PDF ещё не подключён к бэкенду. Отчёт можно скачать в JSON.',
+        })
+      } else {
+        showApiError(cause, 'Не удалось получить PDF')
+      }
     } finally {
       setDownloading(null)
     }
