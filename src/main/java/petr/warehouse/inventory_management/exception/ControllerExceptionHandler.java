@@ -10,6 +10,7 @@ import petr.warehouse.inventory_management.exception.data.IllegalSellOrWriteOffC
 import petr.warehouse.inventory_management.exception.data.ProductAlreadyExistsException;
 import petr.warehouse.inventory_management.exception.data.ProductNotFoundException;
 import petr.warehouse.inventory_management.exception.data.StorageNotFoundException;
+import petr.warehouse.inventory_management.exception.request.ReportPdfUnavailableException;
 import petr.warehouse.inventory_management.exception.request.ZeroOrNullAdmissionCost;
 
 import java.util.Map;
@@ -58,6 +59,15 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 "Не указана цена поступления");
         System.out.println(webRequest);
+        return problemDetail;
+    }
+
+    @ExceptionHandler
+    public ProblemDetail handleReportPdfUnavailable(ReportPdfUnavailableException e, WebRequest webRequest){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                "Сервис формирования PDF недоступен. Попробуйте позже или скачайте отчёт в JSON.");
+        logger.warn("PDF-сервис недоступен: " + e.getMessage());
         return problemDetail;
     }
 

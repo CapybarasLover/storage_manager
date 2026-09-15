@@ -5,11 +5,29 @@ services:
     build:
       context: .
     image: inventory_backend
+    environment:
+      # Наружу python-сервис не публикуется — только внутри сети compose
+      REPORT_PDF_URL: http://report-service:8000
     ports:
       - "8080:8080"
     depends_on:
       liquibase:
         condition: service_completed_successfully
+      report-service:
+        condition: service_healthy
+    networks:
+      - backend_net
+
+  report-service:
+    build:
+      context: ./report-service
+    image: inventory_report_pdf
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
     networks:
       - backend_net
   db:

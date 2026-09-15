@@ -43,3 +43,8 @@ build/
 /frontend/dist/
 # Сюда складывается собранный UI (npm run build), в репозитории не нужен
 /src/main/resources/static/
+
+# python
+.venv/
+__pycache__/
+*.pyc

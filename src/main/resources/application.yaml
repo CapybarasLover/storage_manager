@@ -13,3 +13,11 @@ spring:
       ddl-auto: validate
   liquibase:
     enabled: false # Запуск через докер, в котором отдельный контейнер для LB
+
+# Python-сервис, который рисует PDF по SummaryReportDto.
+# В docker он доступен по имени сервиса, локально — по localhost.
+report:
+  pdf-service:
+    url: ${REPORT_PDF_URL:http://localhost:8000}
+    connect-timeout: 5s
+    read-timeout: 30s

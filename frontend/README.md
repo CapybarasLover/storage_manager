@@ -30,6 +30,12 @@ VITE_AUTH_ENABLED=false
 Со значением по умолчанию (`true`) работают `/auth/login`, `/auth/register`
 и `/auth/me`, а токен уходит в заголовке `Authorization: Bearer`.
 
+### Выгрузка отчёта в PDF
+
+Кнопка «Скачать PDF» на вкладке «Отчёт» бьёт в `GET /report/pdf`, а тот
+проксирует запрос в python-сервис из `report-service/`. Без него бэкенд
+ответит 503, и UI покажет это текстом, предложив выгрузку в JSON.
+
 ## Сборка в jar
 
 `npm run build` кладёт результат в `../src/main/resources/static`, поэтому
