@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import petr.warehouse.inventory_management.dto.StorageItemDto;
 import petr.warehouse.inventory_management.dto.SummaryReportDto;
+import petr.warehouse.inventory_management.exception.data.StorageNotFoundException;
 import petr.warehouse.inventory_management.mapper.StorageItemMapper;
 import petr.warehouse.inventory_management.model.OperationType;
 import petr.warehouse.inventory_management.repository.OperationRepo;
 import petr.warehouse.inventory_management.repository.StorageItemRepo;
+import petr.warehouse.inventory_management.repository.StorageRepo;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -22,29 +24,31 @@ public class ReportService {
     private final StorageItemMapper storageItemMapper;
     private final OperationRepo operationRepo;
     private final StorageItemRepo storageItemRepo;
+    private final StorageRepo storageRepo;
 
     @Autowired
     public ReportService(
             StorageItemMapper storageItemMapper,
             OperationRepo operationRepo,
-            StorageItemRepo storageItemRepo
+            StorageItemRepo storageItemRepo,
+            StorageRepo storageRepo
     ) {
         this.storageItemMapper = storageItemMapper;
         this.operationRepo = operationRepo;
         this.storageItemRepo = storageItemRepo;
+        this.storageRepo = storageRepo;
     }
 
     public SummaryReportDto createNewReport(String storageName, LocalDate dateFrom, LocalDate dateTo) {
+        if (!storageRepo.existsByName(storageName)) {
+            throw new StorageNotFoundException("404: Такой склад не найден!", storageName);
+        }
+
         ZoneId zone = ZoneId.of("Europe/Moscow");
         Instant from = dateFrom.atStartOfDay(zone).toInstant();
         Instant to = dateTo.plusDays(1).atStartOfDay(zone).toInstant();
 
         List<Object> rawRows = operationRepo.groupOperationsForReport(storageName, from, to);
-
-        //TODO кастомное исключение
-        if (rawRows.isEmpty()) {
-            throw new RuntimeException("No operations found for the given period");
-        }
 
         Map<String, SummaryReportDto.ProductStats> productStats = new HashMap<>();
         int totalAdmCount = 0;
