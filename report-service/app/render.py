@@ -82,15 +82,37 @@ def _styles(palette: Palette) -> SimpleNamespace:
         empty=style("empty", textColor=palette.muted),
         kpi_label=style("kpiLabel", fontName=FONT_BOLD, fontSize=7, textColor=palette.muted),
         kpi_hint=style("kpiHint", fontSize=7, leading=9, textColor=palette.muted),
+        counter=style("counter", fontSize=12, leading=15),
     )
 
 
-def _kpi_card(palette: Palette, s: SimpleNamespace, label: str, value: str, hint: str, value_color=None) -> Table:
+def _value_size(text: str) -> float:
+    """Сумма — главное число страницы, но в карточку она должна влезать."""
+    length = len(text)
+    if length <= 13:
+        return 27
+    if length <= 16:
+        return 23
+    if length <= 20:
+        return 19
+    return 16
+
+
+def _kpi_card(
+    palette: Palette,
+    s: SimpleNamespace,
+    label: str,
+    value: str,
+    hint: str,
+    card_width: float,
+    value_color=None,
+) -> Table:
+    size = _value_size(value)
     value_style = ParagraphStyle(
         "kpiValue",
         fontName=FONT_BOLD,
-        fontSize=15,
-        leading=19,
+        fontSize=size,
+        leading=size * 1.22,
         textColor=value_color or palette.ink,
     )
     inner = Table(
@@ -99,24 +121,61 @@ def _kpi_card(palette: Palette, s: SimpleNamespace, label: str, value: str, hint
             [Paragraph(value, value_style)],
             [Paragraph(hint, s.kpi_hint)],
         ],
-        colWidths=[76 * mm],
+        colWidths=[card_width],
     )
     inner.setStyle(
         TableStyle(
             [
                 ("BACKGROUND", (0, 0), (-1, -1), palette.card),
-                ("LEFTPADDING", (0, 0), (-1, -1), 8),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
-                ("TOPPADDING", (0, 0), (0, 0), 8),
-                ("BOTTOMPADDING", (0, -1), (0, -1), 8),
-                ("TOPPADDING", (0, 1), (0, -1), 2),
-                ("BOTTOMPADDING", (0, 0), (0, -2), 2),
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+                ("TOPPADDING", (0, 0), (0, 0), 10),
+                ("BOTTOMPADDING", (0, -1), (0, -1), 10),
+                ("TOPPADDING", (0, 1), (0, -1), 3),
+                ("BOTTOMPADDING", (0, 0), (0, -2), 3),
                 ("BOX", (0, 0), (-1, -1), 0.6, palette.line),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
             ]
         )
     )
     return inner
+
+
+def _counters_strip(palette: Palette, s: SimpleNamespace, stats, width: float) -> Table:
+    """Количество операций — подпись под суммами, а не третья таблица."""
+
+    def cell(label: str, count: int, total: int, verb: str) -> Paragraph:
+        return Paragraph(
+            f'<font size="7" color="{hex_of(palette.muted)}">{label.upper()}</font><br/>'
+            f"{number(count)}"
+            f'<font size="9" color="{hex_of(palette.muted)}">'
+            f"{NBSP}{NBSP}·{NBSP}{NBSP}{number(total)}{NBSP}шт. {verb}</font>",
+            s.counter,
+        )
+
+    strip = Table(
+        [[
+            cell("Поступления", stats.admissionsCount, stats.admissionsTotal, "принято"),
+            cell("Продажи", stats.sellsCount, stats.sellsTotal, "продано"),
+            cell("Списания", stats.writeOffsCount, stats.writeOffsTotal, "списано"),
+        ]],
+        colWidths=[width / 3] * 3,
+    )
+    strip.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), palette.card),
+                ("BOX", (0, 0), (-1, -1), 0.6, palette.line),
+                ("LINEAFTER", (0, 0), (-2, -1), 0.6, palette.line),
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+                ("TOPPADDING", (0, 0), (-1, -1), 8),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ]
+        )
+    )
+    return strip
 
 
 def _cards_row(cards: list[Table], width: float) -> Table:
@@ -210,30 +269,22 @@ def render_report(report: SummaryReport, theme: str = "light") -> bytes:
     )
     story.append(Spacer(1, 8 * mm))
 
+    card_width = width / 3 - 4
     story.append(
         _cards_row(
             [
-                _kpi_card(palette, s, "Закупки", money(stats.spending), "Сумма поступлений за период"),
-                _kpi_card(palette, s, "Выручка", money(stats.revenue), "Сумма продаж за период"),
+                _kpi_card(palette, s, "Закупки", money(stats.spending), "Сумма поступлений за период", card_width),
+                _kpi_card(palette, s, "Выручка", money(stats.revenue), "Сумма продаж за период", card_width),
                 _kpi_card(
-                    palette, s, "Результат", money(stats.profit),
-                    "Продажи − Закупки за период", palette.sign(stats.profit),
+                    palette, s, "Прибыль", money(stats.profit),
+                    "Продажи − Закупки за период", card_width, palette.sign(stats.profit),
                 ),
             ],
             width,
         )
     )
-    story.append(Spacer(1, 4 * mm))
-    story.append(
-        _cards_row(
-            [
-                _kpi_card(palette, s, "Поступления", number(stats.admissionsCount), f"{number(stats.admissionsTotal)} шт. принято"),
-                _kpi_card(palette, s, "Продажи", number(stats.sellsCount), f"{number(stats.sellsTotal)} шт. продано"),
-                _kpi_card(palette, s, "Списания", number(stats.writeOffsCount), f"{number(stats.writeOffsTotal)} шт. списано"),
-            ],
-            width,
-        )
-    )
+    story.append(Spacer(1, 3 * mm))
+    story.append(_counters_strip(palette, s, stats, width))
     story.append(Spacer(1, 9 * mm))
 
     story.append(Paragraph("По товарам", s.section))
@@ -245,7 +296,7 @@ def render_report(report: SummaryReport, theme: str = "light") -> bytes:
             Paragraph("Списания", s.head_right),
             Paragraph("Затраты", s.head_right),
             Paragraph("Выручка", s.head_right),
-            Paragraph("Результат", s.head_right),
+            Paragraph("Прибыль", s.head_right),
         ]
         rows = []
         ordered = sorted(report.productStats.items(), key=lambda kv: kv[1].productRevenue, reverse=True)

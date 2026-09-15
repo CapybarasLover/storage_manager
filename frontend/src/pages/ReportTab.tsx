@@ -147,7 +147,7 @@ export function ReportTab() {
                     <TableHead className="text-right">Списания</TableHead>
                     <TableHead className="text-right">Затраты</TableHead>
                     <TableHead className="text-right">Выручка</TableHead>
-                    <TableHead className="text-right">Результат</TableHead>
+                    <TableHead className="text-right">Прибыль</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -228,7 +228,7 @@ function ReportKpis({ report }: { report: SummaryReportDto }) {
         <StatCard label="Закупки" value={formatMoney(stats.spending)} hint="Сумма поступлений за период" />
         <StatCard label="Выручка" value={formatMoney(stats.revenue)} hint="Сумма продаж за период" />
         <StatCard
-          label="Результат"
+          label="Прибыль"
           value={formatMoney(stats.profit)}
           valueClassName={cn(stats.profit > 0 && 'text-positive', stats.profit < 0 && 'text-negative')}
           // Кассовый метод, а не себестоимость проданного: крупная закупка
