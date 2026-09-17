@@ -98,7 +98,7 @@ public class OperationService {
                 opRepo.save(sellOrWriteOffOperation);
             }
             case CANCELLATION -> throw new OperationCancelException(
-                    "Нельзя создать операцию типа CANCELLATION напрямую", storageId);
+                    "Нельзя создать операцию типа CANCELLATION напрямую", (long) -1);
         }
     }
 
@@ -116,15 +116,15 @@ public class OperationService {
         return unitCost.multiply(BigDecimal.valueOf(unitsSold));
     }
 
-    public void cancelOperation(Long operationId) {
+    public void cancelOperation(Long cancelledOperationId) {
         //Ищем отменную операцию
-        Operation cancelledOperation = opRepo.findById(operationId)
-                .orElseThrow(() -> new OperationNotFound("Операции с таким id нет", operationId));
+        Operation cancelledOperation = opRepo.findById(cancelledOperationId)
+                .orElseThrow(() -> new OperationNotFound("Операции с таким id нет", cancelledOperationId));
 
-        if(cancelledOperation.getIsCanceled() == true ||
+        if(cancelledOperation.getIsCanceled() ||
                 cancelledOperation.getOperationType() == OperationType.CANCELLATION){
             throw new OperationCancelException("Эту операцию отменить нельзя, " +
-                    "потому что она либо отменена, либо является отменяющей!", operationId);
+                    "потому что она либо отменена, либо является отменяющей!", cancelledOperationId);
         }
 
         //Ищем отмененный товар
@@ -140,7 +140,17 @@ public class OperationService {
 
         //Возвращаем все как было до операции
         switch (cancelledOperation.getOperationType()){
-            case ADMISSION -> itemRevert.subtractCount(cancelledOperation.getAmount());
+            case ADMISSION -> {
+                try{
+                    itemRevert.subtractCount(cancelledOperation.getAmount());
+                } catch (RuntimeException e){
+                    throw new OperationCancelException(
+                            "Ошибка возврата поступления - продукта на складе не хватает для списания.",
+                            cancelledOperationId
+                    );
+                }
+
+            }
             case SELL, WRITE_OFF -> itemRevert.addCount(cancelledOperation.getAmount());
         }
 

@@ -39,7 +39,7 @@ public class ReportService {
         Instant from = dateFrom.atStartOfDay(zone).toInstant();
         Instant to = dateTo.plusDays(1).atStartOfDay(zone).toInstant();
 
-        List<Object> rawRows = operationRepo.groupOperationsForReport(storageName, from, to);
+        List<Object> rawRows = operationRepo.groupOperationsForReport(storageName, from, to, OperationType.CANCELLATION);
 
         //TODO кастомное исключение
         if (rawRows.isEmpty()) {

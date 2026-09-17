@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import petr.warehouse.inventory_management.exception.data.OperationCancelException;
 
 import java.math.BigDecimal;
 
@@ -62,6 +63,9 @@ public class StorageItem {
     }
 
     public void subtractCount(Integer minusCount) {
+        if(minusCount > itemCount){
+            throw new RuntimeException("Невозможно списать столько продукта");
+        }
         itemCount -= minusCount;
         changeStatus();
     }

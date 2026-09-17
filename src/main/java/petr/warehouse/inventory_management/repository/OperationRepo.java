@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import petr.warehouse.inventory_management.model.Operation;
+import petr.warehouse.inventory_management.model.OperationType;
 
 import java.time.Instant;
 import java.util.List;
@@ -15,8 +16,8 @@ public interface OperationRepo extends JpaRepository<Operation, Long>, JpaSpecif
             "COUNT(o) as ops, SUM(o.amount) as total, SUM(o.operationCost) as totalOperationCost " +
             "FROM Operation o " +
             "WHERE o.storageName = :storageName " +
-            "AND o.operationType != 'CANCELATION' AND o.isCanceled = false " +
+            "AND o.operationType != :cancellationType AND o.isCanceled = false " +
             "AND o.operationDateTime BETWEEN :from AND :to " +
             "GROUP BY o.productName, o.operationType")
-    List<Object> groupOperationsForReport(String storageName, Instant from, Instant to);
+    List<Object> groupOperationsForReport(String storageName, Instant from, Instant to, OperationType cancellationType);
 }
